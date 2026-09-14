@@ -3,6 +3,7 @@ import { MapPin, Mail, Phone } from "lucide-react";
 import { LandingHero } from "@/components/hero/LandingHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
@@ -27,7 +28,7 @@ export default function ContactPage() {
 
       <section className="py-16 sm:py-20">
         <Container className="grid gap-14 lg:grid-cols-2">
-          <div>
+          <Reveal variant="slideRight">
             <SectionHeading eyebrow="School Office" title="Contact Information" />
             <ul className="mt-8 space-y-6">
               <li className="flex items-start gap-3">
@@ -68,14 +69,14 @@ export default function ContactPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </Reveal>
 
-          <div>
+          <Reveal variant="slideLeft" delay={100}>
             <SectionHeading eyebrow="Enquiry" title="Send an Enquiry" />
             <div className="mt-8">
               <EnquiryForm />
             </div>
-          </div>
+          </Reveal>
         </Container>
       </section>
 

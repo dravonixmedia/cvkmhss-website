@@ -3,10 +3,12 @@ import { FileText } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
 import { downloadCategories, downloads } from "@/data/downloads";
+import { staggerDelay } from "@/lib/stagger";
 
 const title = "Downloads";
 const description = "Downloadable academic, admissions and general documents from C V K M Higher Secondary School.";
@@ -30,10 +32,10 @@ export default function DownloadsPage() {
 
       <section className="py-16 sm:py-20">
         <Container className="space-y-12">
-          {downloadCategories.map((category) => {
+          {downloadCategories.map((category, categoryIndex) => {
             const items = downloads.filter((item) => item.category === category);
             return (
-              <div key={category}>
+              <Reveal key={category} variant="fadeUp" delay={staggerDelay(categoryIndex, 60)}>
                 <h2 className="font-heading text-lg font-semibold text-navy">{category}</h2>
                 <div className="mt-4">
                   {items.length === 0 ? (
@@ -57,7 +59,7 @@ export default function DownloadsPage() {
                     </ul>
                   )}
                 </div>
-              </div>
+              </Reveal>
             );
           })}
         </Container>

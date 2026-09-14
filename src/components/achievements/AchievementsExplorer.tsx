@@ -3,6 +3,8 @@
 import { useState } from "react";
 import type { AchievementCategory, AchievementItem } from "@/types";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Reveal } from "@/components/motion/Reveal";
+import { staggerDelay } from "@/lib/stagger";
 
 interface Props {
   categories: { id: AchievementCategory | "all"; label: string }[];
@@ -43,7 +45,13 @@ export function AchievementsExplorer({ categories, items }: Props) {
         ) : (
           <ul className="divide-y divide-border border-t border-border">
             {filtered.map((item, index) => (
-              <li key={item.slug} className="grid gap-2 py-8 sm:grid-cols-[4rem_6rem_1fr] sm:gap-6">
+              <Reveal
+                key={item.slug}
+                as="li"
+                variant="fadeUp"
+                delay={staggerDelay(index, 90)}
+                className="grid gap-2 py-8 sm:grid-cols-[4rem_6rem_1fr] sm:gap-6"
+              >
                 <span className="font-heading text-xl font-bold text-gold">
                   {String(index + 1).padStart(2, "0")}
                 </span>
@@ -54,7 +62,7 @@ export function AchievementsExplorer({ categories, items }: Props) {
                     {item.description}
                   </p>
                 </div>
-              </li>
+              </Reveal>
             ))}
           </ul>
         )}

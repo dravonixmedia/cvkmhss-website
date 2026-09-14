@@ -5,12 +5,14 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
 import { Faq } from "@/components/ui/Faq";
+import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
 import { academicStages } from "@/data/academics";
 import { faqCategories } from "@/data/faq";
 import { pageHeroes } from "@/data/pageHeroes";
+import { staggerDelay } from "@/lib/stagger";
 
 const title = "Admissions";
 const description =
@@ -34,27 +36,29 @@ export default function AdmissionsPage() {
 
       <section className="py-16 sm:py-20">
         <Container>
-          <SectionHeading eyebrow="Overview" title="Available Classes & Programmes" />
+          <Reveal variant="fadeUp">
+            <SectionHeading eyebrow="Overview" title="Available Classes & Programmes" />
+          </Reveal>
           <div className="mt-10 grid divide-y divide-border border-t border-border sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-            <div className="py-6 sm:py-0 sm:pr-8">
+            <Reveal variant="fadeUp" delay={100} className="py-6 sm:py-0 sm:pr-8">
               <h3 className="font-heading text-base font-semibold text-navy">Classes V–X</h3>
               <p className="mt-2 text-sm leading-relaxed text-slate">
                 Secondary schooling building core academic foundations.
               </p>
-            </div>
-            <div className="py-6 sm:py-0 sm:pl-8">
+            </Reveal>
+            <Reveal variant="fadeUp" delay={180} className="py-6 sm:py-0 sm:pl-8">
               <h3 className="font-heading text-base font-semibold text-navy">Higher Secondary</h3>
               <ul className="mt-2 space-y-1 text-sm text-slate">
                 {higherSecondary?.streams?.map((stream) => <li key={stream.name}>{stream.name}</li>)}
               </ul>
-            </div>
+            </Reveal>
           </div>
         </Container>
       </section>
 
       <section className="border-y border-border bg-paper py-16 sm:py-20">
         <Container className="grid gap-8 sm:grid-cols-2">
-          <div>
+          <Reveal variant="fadeUp" delay={staggerDelay(0, 70)}>
             <SectionHeading eyebrow="Guidelines" title="Admission Guidelines" />
             <div className="mt-6">
               <EmptyState
@@ -62,8 +66,8 @@ export default function AdmissionsPage() {
                 description="Detailed admission guidelines will be published here once confirmed by the school."
               />
             </div>
-          </div>
-          <div>
+          </Reveal>
+          <Reveal variant="fadeUp" delay={staggerDelay(1, 70)}>
             <SectionHeading eyebrow="Dates" title="Important Dates" />
             <div className="mt-6">
               <EmptyState
@@ -71,8 +75,8 @@ export default function AdmissionsPage() {
                 description="Important dates will be published here once the admission process is announced."
               />
             </div>
-          </div>
-          <div>
+          </Reveal>
+          <Reveal variant="fadeUp" delay={staggerDelay(2, 70)}>
             <SectionHeading eyebrow="Documents" title="Required Documents" />
             <div className="mt-6">
               <EmptyState
@@ -80,8 +84,8 @@ export default function AdmissionsPage() {
                 description="A list of required documents will be published here once confirmed."
               />
             </div>
-          </div>
-          <div>
+          </Reveal>
+          <Reveal variant="fadeUp" delay={staggerDelay(3, 70)}>
             <SectionHeading eyebrow="Enquiry" title="Admission Enquiry" />
             <div className="mt-6 space-y-4">
               <p className="text-sm leading-relaxed text-slate">
@@ -91,16 +95,18 @@ export default function AdmissionsPage() {
                 Contact School
               </Button>
             </div>
-          </div>
+          </Reveal>
         </Container>
       </section>
 
       <section className="py-16 sm:py-20">
         <Container className="max-w-3xl">
-          <SectionHeading eyebrow="Frequently Asked Questions" title="Admissions FAQ" />
-          <div className="mt-10">
-            <Faq categories={admissionsFaq} />
-          </div>
+          <Reveal variant="fadeUp">
+            <SectionHeading eyebrow="Frequently Asked Questions" title="Admissions FAQ" />
+            <div className="mt-10">
+              <Faq categories={admissionsFaq} />
+            </div>
+          </Reveal>
         </Container>
       </section>
 

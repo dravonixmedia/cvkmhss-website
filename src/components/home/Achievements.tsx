@@ -3,39 +3,51 @@ import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Reveal } from "@/components/motion/Reveal";
 import { achievementCategories, achievements } from "@/data/achievements";
+import { staggerDelay } from "@/lib/stagger";
 
 export function Achievements() {
   return (
     <section className="py-20 sm:py-24">
       <Container>
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <SectionHeading eyebrow="Achievements" title="Celebrating Progress" />
-          <Link
-            href="/achievements"
-            className="inline-flex items-center gap-1 text-sm font-semibold text-navy hover:text-gold"
-          >
-            View all achievements <ArrowRight className="h-4 w-4" aria-hidden />
-          </Link>
-        </div>
+        <Reveal variant="fadeUp">
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <SectionHeading eyebrow="Achievements" title="Celebrating Progress" />
+            <Link
+              href="/achievements"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-navy hover:text-gold"
+            >
+              View all achievements <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </div>
+        </Reveal>
 
         <ul className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-y border-border py-5">
           {achievementCategories
             .filter((category) => category.id !== "all")
             .map((category, index) => (
-              <li key={category.id} className="flex items-baseline gap-2 text-xs tracking-[0.14em] uppercase">
+              <Reveal
+                key={category.id}
+                as="li"
+                variant="fadeUp"
+                delay={staggerDelay(index, 50)}
+                className="flex items-baseline gap-2 text-xs tracking-[0.14em] uppercase"
+              >
                 <span className="text-gold">{String(index + 1).padStart(2, "0")}</span>
                 <span className="text-slate">{category.label}</span>
-              </li>
+              </Reveal>
             ))}
         </ul>
 
         <div className="mt-10">
           {achievements.length === 0 ? (
-            <EmptyState
-              title="Achievements coming soon"
-              description="Verified student and school achievements will be published here as they are confirmed."
-            />
+            <Reveal variant="fadeUp" delay={120}>
+              <EmptyState
+                title="Achievements coming soon"
+                description="Verified student and school achievements will be published here as they are confirmed."
+              />
+            </Reveal>
           ) : null}
         </div>
       </Container>

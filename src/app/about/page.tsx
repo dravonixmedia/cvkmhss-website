@@ -4,12 +4,14 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Faq } from "@/components/ui/Faq";
+import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
 import { legacyTimeline, positioningPillars, site } from "@/data/site";
 import { faqCategories } from "@/data/faq";
 import { pageHeroes } from "@/data/pageHeroes";
+import { staggerDelay } from "@/lib/stagger";
 
 const schoolFaq = faqCategories.filter((category) => category.id === "school");
 
@@ -31,20 +33,27 @@ export default function AboutPage() {
 
       <section className="py-16 sm:py-20">
         <Container className="max-w-3xl">
-          <SectionHeading eyebrow="Introduction" title="Who We Are" />
-          <p className="mt-6 text-base leading-relaxed text-slate">
-            {site.name} ({site.alternateName}) is an educational institution located in{" "}
-            {site.address.locality}, {site.address.region}, {site.address.state}, {site.address.country}.
-            Founded in {site.foundingYear}, the school has grown over the decades to offer Higher
-            Secondary education since {site.higherSecondaryStartYear}, across Science, Computer
-            Science and Humanities streams.
-          </p>
+          <Reveal variant="fadeUp">
+            <SectionHeading eyebrow="Introduction" title="Who We Are" />
+            <p className="mt-6 text-base leading-relaxed text-slate">
+              {site.name} ({site.alternateName}) is an educational institution located in{" "}
+              {site.address.locality}, {site.address.region}, {site.address.state}, {site.address.country}.
+              Founded in {site.foundingYear}, the school has grown over the decades to offer Higher
+              Secondary education since {site.higherSecondaryStartYear}, across Science, Computer
+              Science and Humanities streams.
+            </p>
+          </Reveal>
           <div className="mt-10 grid gap-6 sm:grid-cols-2">
-            {positioningPillars.map((pillar) => (
-              <div key={pillar.name} className="border-l-2 border-gold pl-5">
+            {positioningPillars.map((pillar, index) => (
+              <Reveal
+                key={pillar.name}
+                variant="fadeUp"
+                delay={100 + staggerDelay(index, 70)}
+                className="border-l-2 border-gold pl-5"
+              >
                 <h3 className="font-heading text-base font-semibold text-navy">{pillar.name}</h3>
                 <p className="mt-1 text-sm leading-relaxed text-slate">{pillar.description}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </Container>
@@ -52,15 +61,17 @@ export default function AboutPage() {
 
       <section className="border-y border-border bg-paper py-16 sm:py-20">
         <Container className="max-w-3xl">
-          <SectionHeading eyebrow="Legacy" title="Our Journey" />
+          <Reveal variant="fadeUp">
+            <SectionHeading eyebrow="Legacy" title="Our Journey" />
+          </Reveal>
           <ol className="mt-10 space-y-8 border-l border-border pl-6">
-            {legacyTimeline.map((entry) => (
-              <li key={entry.year} className="relative">
+            {legacyTimeline.map((entry, index) => (
+              <Reveal key={entry.year} as="li" variant="fadeUp" delay={staggerDelay(index, 100)} className="relative">
                 <span className="absolute top-1 -left-[29px] h-3 w-3 bg-gold" aria-hidden />
                 <div className="font-heading text-xl font-bold text-navy">{entry.year}</div>
                 <div className="mt-1 text-sm font-semibold text-charcoal">{entry.title}</div>
                 <p className="mt-1 text-sm leading-relaxed text-slate">{entry.description}</p>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </Container>
@@ -68,34 +79,47 @@ export default function AboutPage() {
 
       <section className="py-16 sm:py-20">
         <Container className="max-w-3xl">
-          <SectionHeading eyebrow="Identity" title="Vision, Mission & Leadership" />
+          <Reveal variant="fadeUp">
+            <SectionHeading eyebrow="Identity" title="Vision, Mission & Leadership" />
+          </Reveal>
           <div className="mt-10 grid gap-x-10 gap-y-10 border-t border-border pt-10 sm:grid-cols-2">
-            <EmptyState
-              title="Official vision statement pending"
-              description="The school's official vision statement will be published here once confirmed by the management."
-            />
-            <EmptyState
-              title="Official mission statement pending"
-              description="The school's official mission statement will be published here once confirmed by the management."
-            />
-            <EmptyState
-              title="Core values pending confirmation"
-              description="The school's core institutional values will be published here once confirmed."
-            />
-            <EmptyState
-              title="Leadership details pending"
-              description="Names and details of the school's management and leadership will be published here once confirmed."
-            />
+            {[
+              {
+                title: "Official vision statement pending",
+                description:
+                  "The school's official vision statement will be published here once confirmed by the management.",
+              },
+              {
+                title: "Official mission statement pending",
+                description:
+                  "The school's official mission statement will be published here once confirmed by the management.",
+              },
+              {
+                title: "Core values pending confirmation",
+                description: "The school's core institutional values will be published here once confirmed.",
+              },
+              {
+                title: "Leadership details pending",
+                description:
+                  "Names and details of the school's management and leadership will be published here once confirmed.",
+              },
+            ].map((item, index) => (
+              <Reveal key={item.title} variant="fadeUp" delay={staggerDelay(index, 70)}>
+                <EmptyState title={item.title} description={item.description} />
+              </Reveal>
+            ))}
           </div>
         </Container>
       </section>
 
       <section className="border-t border-border bg-paper py-16 sm:py-20">
         <Container className="max-w-3xl">
-          <SectionHeading eyebrow="Frequently Asked Questions" title="About CVKM FAQ" />
-          <div className="mt-10">
-            <Faq categories={schoolFaq} />
-          </div>
+          <Reveal variant="fadeUp">
+            <SectionHeading eyebrow="Frequently Asked Questions" title="About CVKM FAQ" />
+            <div className="mt-10">
+              <Faq categories={schoolFaq} />
+            </div>
+          </Reveal>
         </Container>
       </section>
 

@@ -4,6 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Faq } from "@/components/ui/Faq";
 import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
+import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
@@ -11,6 +12,7 @@ import { facilities } from "@/data/campus";
 import { glanceFacts } from "@/data/site";
 import { faqCategories } from "@/data/faq";
 import { pageHeroes } from "@/data/pageHeroes";
+import { staggerDelay } from "@/lib/stagger";
 
 const title = "Campus & Facilities";
 const description =
@@ -35,11 +37,11 @@ export default function CampusPage() {
           <div className="flex flex-wrap gap-10">
             {glanceFacts
               .filter((fact) => fact.label.includes("Campus") || fact.label.includes("Classrooms") || fact.label.includes("Library"))
-              .map((fact) => (
-                <div key={fact.label}>
+              .map((fact, index) => (
+                <Reveal key={fact.label} variant="fadeUp" delay={staggerDelay(index, 80)}>
                   <div className="font-heading text-2xl font-bold text-navy">{fact.value}</div>
                   <div className="text-xs text-slate">{fact.label}</div>
-                </div>
+                </Reveal>
               ))}
           </div>
         </Container>
@@ -47,7 +49,9 @@ export default function CampusPage() {
 
       <section className="py-16 sm:py-20">
         <Container>
-          <SectionHeading eyebrow="Facilities" title="Campus Life" />
+          <Reveal variant="fadeUp">
+            <SectionHeading eyebrow="Facilities" title="Campus Life" />
+          </Reveal>
           <div className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
             {facilities.map((facility, index) => (
               <div key={facility.name}>
@@ -57,13 +61,16 @@ export default function CampusPage() {
                     tone={index % 2 === 0 ? "navy" : "ivory"}
                     focal={index % 3 === 0 ? "center" : index % 3 === 1 ? "top-left" : "bottom-right"}
                     compact
+                    delay={staggerDelay(index, 80)}
                     className="absolute inset-0"
                   />
                 </div>
-                <h3 className="font-heading mt-4 text-base font-semibold text-navy">
-                  {facility.name}
-                </h3>
-                <p className="mt-1 text-sm leading-relaxed text-slate">{facility.description}</p>
+                <Reveal variant="fadeUp" delay={staggerDelay(index, 80) + 200}>
+                  <h3 className="font-heading mt-4 text-base font-semibold text-navy">
+                    {facility.name}
+                  </h3>
+                  <p className="mt-1 text-sm leading-relaxed text-slate">{facility.description}</p>
+                </Reveal>
               </div>
             ))}
           </div>
@@ -72,10 +79,12 @@ export default function CampusPage() {
 
       <section className="border-t border-border bg-paper py-16 sm:py-20">
         <Container className="max-w-3xl">
-          <SectionHeading eyebrow="Frequently Asked Questions" title="Campus FAQ" />
-          <div className="mt-10">
-            <Faq categories={facilitiesFaq} />
-          </div>
+          <Reveal variant="fadeUp">
+            <SectionHeading eyebrow="Frequently Asked Questions" title="Campus FAQ" />
+            <div className="mt-10">
+              <Faq categories={facilitiesFaq} />
+            </div>
+          </Reveal>
         </Container>
       </section>
 

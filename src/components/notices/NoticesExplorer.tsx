@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import type { NoticeCategory, NoticeItem } from "@/types";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Reveal } from "@/components/motion/Reveal";
+import { staggerDelay } from "@/lib/stagger";
 
 const categoryLabels: Record<NoticeCategory, string> = {
   academic: "Academic",
@@ -78,9 +80,12 @@ export function NoticesExplorer({ notices }: { notices: NoticeItem[] }) {
               <span>Action</span>
             </div>
             <ul className="divide-y divide-border">
-              {filtered.map((notice) => (
-                <li
+              {filtered.map((notice, index) => (
+                <Reveal
                   key={notice.slug}
+                  as="li"
+                  variant="fadeUp"
+                  delay={staggerDelay(index, 50)}
                   className="grid grid-cols-1 gap-1.5 py-5 sm:grid-cols-[6rem_9rem_1fr_6rem] sm:items-start sm:gap-4"
                 >
                   <span className="text-xs font-medium text-gold sm:text-sm">{notice.date}</span>
@@ -103,7 +108,7 @@ export function NoticesExplorer({ notices }: { notices: NoticeItem[] }) {
                   ) : (
                     <span className="text-xs text-border">—</span>
                   )}
-                </li>
+                </Reveal>
               ))}
             </ul>
           </div>

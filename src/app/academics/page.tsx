@@ -4,12 +4,14 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Faq } from "@/components/ui/Faq";
+import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
 import { academicStages } from "@/data/academics";
 import { faqCategories } from "@/data/faq";
 import { pageHeroes } from "@/data/pageHeroes";
+import { staggerDelay } from "@/lib/stagger";
 
 const title = "Academics";
 const description =
@@ -34,23 +36,32 @@ export default function AcademicsPage() {
 
       <section className="py-16 sm:py-20">
         <Container>
-          <SectionHeading eyebrow="Foundational & Secondary" title={foundational?.name ?? ""} />
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate">
-            {foundational?.description}
-          </p>
+          <Reveal variant="fadeUp">
+            <SectionHeading eyebrow="Foundational & Secondary" title={foundational?.name ?? ""} />
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate">
+              {foundational?.description}
+            </p>
+          </Reveal>
         </Container>
       </section>
 
       <section className="border-y border-border bg-paper py-16 sm:py-20">
         <Container>
-          <SectionHeading eyebrow="Higher Secondary" title={higherSecondary?.name ?? ""} />
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate">
-            {higherSecondary?.description}
-          </p>
+          <Reveal variant="fadeUp">
+            <SectionHeading eyebrow="Higher Secondary" title={higherSecondary?.name ?? ""} />
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate">
+              {higherSecondary?.description}
+            </p>
+          </Reveal>
 
           <div className="mt-10 grid divide-y divide-border border-t border-border lg:grid-cols-3 lg:divide-x lg:divide-y-0">
-            {higherSecondary?.streams?.map((stream) => (
-              <div key={stream.name} className="py-6 lg:px-8 lg:py-0 lg:first:pl-0">
+            {higherSecondary?.streams?.map((stream, index) => (
+              <Reveal
+                key={stream.name}
+                variant="fadeUp"
+                delay={100 + staggerDelay(index, 90)}
+                className="py-6 lg:px-8 lg:py-0 lg:first:pl-0"
+              >
                 <h3 className="font-heading text-lg font-semibold text-navy">{stream.name}</h3>
                 <ul className="mt-4 space-y-2 text-sm text-slate">
                   {stream.subjects.map((subject) => (
@@ -60,7 +71,7 @@ export default function AcademicsPage() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </Reveal>
             ))}
           </div>
         </Container>
@@ -68,7 +79,7 @@ export default function AcademicsPage() {
 
       <section className="py-16 sm:py-20">
         <Container className="grid gap-10 lg:grid-cols-2">
-          <div>
+          <Reveal variant="fadeUp">
             <SectionHeading eyebrow="Curriculum" title="Curriculum & Departments" />
             <div className="mt-6">
               <EmptyState
@@ -76,8 +87,8 @@ export default function AcademicsPage() {
                 description="Detailed subject curriculum and department information will be published here."
               />
             </div>
-          </div>
-          <div>
+          </Reveal>
+          <Reveal variant="fadeUp" delay={80}>
             <SectionHeading eyebrow="Calendar" title="Academic Calendar & Examinations" />
             <div className="mt-6">
               <EmptyState
@@ -85,16 +96,18 @@ export default function AcademicsPage() {
                 description="The academic calendar and examination schedule will be published here once confirmed."
               />
             </div>
-          </div>
+          </Reveal>
         </Container>
       </section>
 
       <section className="border-t border-border bg-paper py-16 sm:py-20">
         <Container className="max-w-3xl">
-          <SectionHeading eyebrow="Frequently Asked Questions" title="Academics FAQ" />
-          <div className="mt-10">
-            <Faq categories={academicsFaq} />
-          </div>
+          <Reveal variant="fadeUp">
+            <SectionHeading eyebrow="Frequently Asked Questions" title="Academics FAQ" />
+            <div className="mt-10">
+              <Faq categories={academicsFaq} />
+            </div>
+          </Reveal>
         </Container>
       </section>
 

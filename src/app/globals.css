@@ -71,3 +71,82 @@ body {
 .skip-link:focus {
   left: 0;
 }
+
+/* ---- Scroll reveal system (src/components/motion/Reveal.tsx) ----
+   Animates only opacity/transform (no layout properties) and is gated by
+   IntersectionObserver in JS, which also handles prefers-reduced-motion by
+   marking everything visible immediately. This CSS block is a second,
+   belt-and-suspenders guard for the same preference. */
+.reveal {
+  transition-property: opacity, transform;
+  transition-duration: 750ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal--fade-up {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+.reveal--fade-in {
+  opacity: 0;
+}
+
+.reveal--slide-left {
+  opacity: 0;
+  transform: translateX(40px);
+}
+
+.reveal--slide-right {
+  opacity: 0;
+  transform: translateX(-40px);
+}
+
+.reveal--scale-in {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+.reveal--image-reveal {
+  opacity: 0;
+  transform: scale(1.045);
+  transition-duration: 900ms;
+}
+
+.reveal--line-reveal {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition-property: transform;
+  transition-duration: 900ms;
+}
+
+.reveal--line-reveal.reveal--vertical {
+  transform: scaleY(0);
+  transform-origin: top center;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal--line-reveal.is-visible {
+  transform: scaleX(1);
+}
+
+.reveal--line-reveal.reveal--vertical.is-visible {
+  transform: scaleY(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Primary mechanism for reduced-motion, not just a JS fallback: forces
+     the fully-visible end state unconditionally, independent of the
+     IntersectionObserver/useState in useInView.ts and of any SSR/hydration
+     timing. Content that only ever gets an inline transitionDelay (no
+     other positioning) is otherwise unaffected. */
+  .reveal {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

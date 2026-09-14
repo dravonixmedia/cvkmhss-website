@@ -3,12 +3,14 @@ import { LandingHero } from "@/components/hero/LandingHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema, eventSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
 import { getPastEvents, getUpcomingEvents } from "@/data/events";
 import { formatEventDate } from "@/lib/date";
 import { pageHeroes } from "@/data/pageHeroes";
+import { staggerDelay } from "@/lib/stagger";
 
 const title = "Events";
 const description = "Upcoming and past events at C V K M Higher Secondary School, East Kallada.";
@@ -23,10 +25,16 @@ const breadcrumb = [
 function EventList({ events }: { events: ReturnType<typeof getUpcomingEvents> }) {
   return (
     <ul className="divide-y divide-border border-t border-border">
-      {events.map((event) => {
+      {events.map((event, index) => {
         const { day, month } = formatEventDate(event.date);
         return (
-          <li key={event.slug} className="flex flex-col gap-4 py-8 sm:flex-row sm:items-start">
+          <Reveal
+            key={event.slug}
+            as="li"
+            variant="fadeUp"
+            delay={staggerDelay(index, 90)}
+            className="flex flex-col gap-4 py-8 sm:flex-row sm:items-start"
+          >
             <div className="w-20 shrink-0 border-r border-border pr-6 text-center sm:pr-8">
               <div className="font-heading text-4xl leading-none font-bold text-navy">{day}</div>
               <div className="mt-1.5 text-xs tracking-[0.14em] text-gold uppercase">{month}</div>
@@ -41,7 +49,7 @@ function EventList({ events }: { events: ReturnType<typeof getUpcomingEvents> })
                 {event.description}
               </p>
             </div>
-          </li>
+          </Reveal>
         );
       })}
     </ul>
@@ -58,13 +66,17 @@ export default function EventsPage() {
 
       <section className="py-16 sm:py-20">
         <Container>
-          <SectionHeading eyebrow="Upcoming" title="Upcoming Events" />
+          <Reveal variant="fadeUp">
+            <SectionHeading eyebrow="Upcoming" title="Upcoming Events" />
+          </Reveal>
           <div className="mt-10">
             {upcoming.length === 0 ? (
-              <EmptyState
-                title="No upcoming events published yet"
-                description="Scheduled school events and programmes will be listed here."
-              />
+              <Reveal variant="fadeUp" delay={80}>
+                <EmptyState
+                  title="No upcoming events published yet"
+                  description="Scheduled school events and programmes will be listed here."
+                />
+              </Reveal>
             ) : (
               <EventList events={upcoming} />
             )}
@@ -74,13 +86,17 @@ export default function EventsPage() {
 
       <section className="border-t border-border bg-paper py-16 sm:py-20">
         <Container>
-          <SectionHeading eyebrow="Past" title="Past Events" />
+          <Reveal variant="fadeUp">
+            <SectionHeading eyebrow="Past" title="Past Events" />
+          </Reveal>
           <div className="mt-10">
             {past.length === 0 ? (
-              <EmptyState
-                title="No past events on record yet"
-                description="A record of past school events will appear here."
-              />
+              <Reveal variant="fadeUp" delay={80}>
+                <EmptyState
+                  title="No past events on record yet"
+                  description="A record of past school events will appear here."
+                />
+              </Reveal>
             ) : (
               <EventList events={past} />
             )}

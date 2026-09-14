@@ -7,6 +7,7 @@ import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
 import { galleryAlbums, galleryCategories } from "@/data/gallery";
 import { pageHeroes } from "@/data/pageHeroes";
+import { staggerDelay } from "@/lib/stagger";
 
 const title = "Gallery";
 const description = "Photo gallery of campus, classrooms, events, sports and student activities at CVKM HSS.";
@@ -37,6 +38,8 @@ export default function GalleryPage() {
                     tone={index % 3 === 1 ? "ivory" : "navy"}
                     focal={index % 2 === 0 ? "bottom-left" : "top-right"}
                     compact={index !== 0}
+                    hoverScale
+                    delay={staggerDelay(index, 55)}
                     className="absolute inset-0"
                   />
                 </div>
@@ -44,11 +47,13 @@ export default function GalleryPage() {
             </div>
           ) : (
             <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
-              {galleryAlbums.map((album) => (
+              {galleryAlbums.map((album, index) => (
                 <div key={album.slug} className="relative aspect-[4/3]">
                   <PhotoPlaceholder
                     caption={album.title}
                     tone="navy"
+                    hoverScale
+                    delay={staggerDelay(index, 55)}
                     className="absolute inset-0"
                   />
                 </div>

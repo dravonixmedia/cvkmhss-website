@@ -4,6 +4,7 @@ import { site } from "@/data/site";
 import { footerExploreLinks, footerResourceLinks } from "@/data/navigation";
 import { Logo } from "@/components/ui/Logo";
 import { Container } from "@/components/ui/Container";
+import { Reveal } from "@/components/motion/Reveal";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -17,7 +18,12 @@ export function Footer() {
         {site.foundingYear}
       </span>
 
-      <Container className="relative grid gap-12 py-16 sm:py-20 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr] lg:gap-10">
+      <Reveal
+        as="div"
+        variant="fadeUp"
+        className="relative"
+      >
+      <Container className="grid gap-12 py-16 sm:py-20 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr] lg:gap-10">
         <div>
           <Link href="/" className="flex items-center gap-3">
             <Logo size={52} className="bg-white p-1" />
@@ -83,6 +89,7 @@ export function Footer() {
           </ul>
         </div>
       </Container>
+      </Reveal>
 
       <div className="relative border-t border-white/10">
         <Container className="flex flex-col items-center justify-between gap-3 py-6 text-xs text-white/50 sm:flex-row">

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
+import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { newsArticleSchema, webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
@@ -49,29 +50,31 @@ export default async function NewsArticlePage({ params }: PageProps<"/news/[slug
 
       <article className="py-16 sm:py-20">
         <Container className="max-w-3xl">
-          <header>
-            <p className="text-xs font-semibold tracking-wide text-gold uppercase">
-              {article.category}
-            </p>
-            <h1 className="font-heading mt-3 text-3xl font-bold text-navy sm:text-4xl">
-              {article.title}
-            </h1>
-            <div className="mt-3 flex flex-wrap gap-3 text-xs text-slate">
-              <time dateTime={article.publishedDate}>Published {article.publishedDate}</time>
-              {article.updatedDate && (
-                <time dateTime={article.updatedDate}>Updated {article.updatedDate}</time>
-              )}
-              {article.author && <span>By {article.author}</span>}
-            </div>
-          </header>
+          <Reveal variant="fadeUp" as="div">
+            <header>
+              <p className="text-xs font-semibold tracking-wide text-gold uppercase">
+                {article.category}
+              </p>
+              <h1 className="font-heading mt-3 text-3xl font-bold text-navy sm:text-4xl">
+                {article.title}
+              </h1>
+              <div className="mt-3 flex flex-wrap gap-3 text-xs text-slate">
+                <time dateTime={article.publishedDate}>Published {article.publishedDate}</time>
+                {article.updatedDate && (
+                  <time dateTime={article.updatedDate}>Updated {article.updatedDate}</time>
+                )}
+                {article.author && <span>By {article.author}</span>}
+              </div>
+            </header>
+          </Reveal>
 
-          <section className="prose prose-slate mt-10 max-w-none">
+          <Reveal variant="fadeUp" delay={100} as="div" className="prose prose-slate mt-10 max-w-none">
             {article.body.map((paragraph, index) => (
               <p key={index} className="mb-4 text-base leading-relaxed text-charcoal">
                 {paragraph}
               </p>
             ))}
-          </section>
+          </Reveal>
 
           {related.length > 0 && (
             <footer className="mt-16 border-t border-border pt-10">
