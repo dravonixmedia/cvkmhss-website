@@ -13,7 +13,7 @@ export function Footer() {
       <Container className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <Link href="/" className="flex items-center gap-3">
-            <Logo size={48} className="rounded-sm bg-white p-1" />
+            <Logo size={48} className="bg-white p-1" />
             <span className="font-heading text-base font-bold text-white">{site.shortName}</span>
           </Link>
           <p className="mt-4 text-sm leading-relaxed text-white/70">

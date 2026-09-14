@@ -16,7 +16,7 @@ export const site = {
   foundingYear: 1926,
   higherSecondaryStartYear: 2000,
   url: "https://www.cvkmhss.org",
-  logo: "/images/cvkm-hss-logo-placeholder.svg",
+  logo: "/images/logo.jpg",
   logoAlt: "C V K M Higher Secondary School official emblem",
   address: {
     locality: "East Kallada",

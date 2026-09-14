@@ -58,17 +58,16 @@ public/
 
 ## Brand Assets
 
-`public/images/cvkm-hss-logo-placeholder.svg` is a **temporary placeholder
-mark** — not the official school logo. The official logo was not available
-as a file inside the assistant session that scaffolded this project (images
-shared in that chat could not be exported as raw files), so a clearly
-labelled placeholder monogram was used instead of guessing at the real
-artwork.
+`public/images/logo.jpg` is the **official school logo**, used unmodified
+(not redrawn, recoloured, cropped or recreated) exactly as supplied by the
+school. It is a square (1:1) image, so every component that renders it keeps
+`width` and `height` equal to preserve its original proportions.
 
-**To install the real logo:** add the official logo file to `public/images/`
-and update the single `logo` path in `src/data/site.ts`. Every usage of the
-logo across the site (header, footer, JSON-LD `logo` field, Open Graph image)
-reads from that one config value, so no other file needs to change.
+**Single source of truth:** `src/data/site.ts` exports `site.logo` as
+`/images/logo.jpg`. Every usage of the logo across the site (header, footer,
+JSON-LD `logo` field, Open Graph image) reads from that one config value —
+to swap in a different file later, add it under `public/images/` and update
+that one path; no other file needs to change.
 
 ## Content Architecture
 
@@ -144,7 +143,6 @@ and empty states.
 The following are intentionally **not** invented and need to be supplied
 before Phase 1 can be considered content-complete:
 
-- Official logo artwork (see "Brand Assets" above)
 - Phone number, email address, exact street address/PIN code, and verified
   GPS coordinates or Google Maps link (`src/data/site.ts`)
 - Management/leadership names, and official Vision/Mission/Values statements
