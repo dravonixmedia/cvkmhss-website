@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+:root {
+  --color-navy: #0b3552;
+  --color-navy-dark: #072238;
+  --color-blue: #114b73;
+  --color-gold: #c79a3d;
+  --color-gold-light: #e7c988;
+  --color-off-white: #faf8f4;
+  --color-paper: #ffffff;
+  --color-charcoal: #1c2733;
+  --color-slate: #4b5b6b;
+  --color-border: #e4e1d8;
+}
+
+@theme inline {
+  --color-navy: var(--color-navy);
+  --color-navy-dark: var(--color-navy-dark);
+  --color-blue: var(--color-blue);
+  --color-gold: var(--color-gold);
+  --color-gold-light: var(--color-gold-light);
+  --color-off-white: var(--color-off-white);
+  --color-paper: var(--color-paper);
+  --color-charcoal: var(--color-charcoal);
+  --color-slate: var(--color-slate);
+  --color-border: var(--color-border);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-heading);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  background: var(--color-off-white);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--color-navy);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 0.375rem 0;
+}
+
+.skip-link:focus {
+  left: 0;
+}
