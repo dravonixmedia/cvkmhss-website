@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/layout/PageHero";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { LandingHero } from "@/components/hero/LandingHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -8,23 +7,43 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema, eventSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
 import { getPastEvents, getUpcomingEvents } from "@/data/events";
+import { formatEventDate } from "@/lib/date";
+import { pageHeroes } from "@/data/pageHeroes";
 
 const title = "Events";
 const description = "Upcoming and past events at C V K M Higher Secondary School, East Kallada.";
 
 export const metadata: Metadata = buildMetadata({ title, description, path: "/events" });
 
+const breadcrumb = [
+  { label: "Home", href: "/" },
+  { label: "Events", href: "/events" },
+];
+
 function EventList({ events }: { events: ReturnType<typeof getUpcomingEvents> }) {
   return (
-    <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-      {events.map((event) => (
-        <li key={event.slug} className="border border-border bg-paper p-6">
-          <p className="text-xs font-semibold tracking-wide text-gold uppercase">{event.date}</p>
-          <h3 className="font-heading mt-2 text-base font-semibold text-navy">{event.title}</h3>
-          <p className="mt-1 text-sm text-slate">{event.location}</p>
-          <p className="mt-2 text-sm leading-relaxed text-slate">{event.description}</p>
-        </li>
-      ))}
+    <ul className="divide-y divide-border border-t border-border">
+      {events.map((event) => {
+        const { day, month } = formatEventDate(event.date);
+        return (
+          <li key={event.slug} className="flex flex-col gap-4 py-8 sm:flex-row sm:items-start">
+            <div className="w-20 shrink-0 border-r border-border pr-6 text-center sm:pr-8">
+              <div className="font-heading text-4xl leading-none font-bold text-navy">{day}</div>
+              <div className="mt-1.5 text-xs tracking-[0.14em] text-gold uppercase">{month}</div>
+            </div>
+            <div>
+              <h3 className="font-heading text-lg font-semibold text-navy">{event.title}</h3>
+              <p className="mt-1 text-sm text-slate">
+                {event.location}
+                {event.startTime && ` · ${event.startTime}`}
+              </p>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate">
+                {event.description}
+              </p>
+            </div>
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -35,8 +54,7 @@ export default function EventsPage() {
 
   return (
     <>
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Events", href: "/events" }]} />
-      <PageHero eyebrow="Events" title="School Events" />
+      <LandingHero hero={pageHeroes.events} breadcrumb={breadcrumb} />
 
       <section className="py-16 sm:py-20">
         <Container>

@@ -1,46 +1,44 @@
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { site } from "@/data/site";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-navy text-white">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-40 -right-40 h-[560px] w-[560px] rounded-full border border-gold/25"
+    <section className="relative flex min-h-[82vh] items-end overflow-hidden sm:min-h-[78vh] lg:min-h-[92vh]">
+      <PhotoPlaceholder
+        caption={`${site.name} campus, East Kallada`}
+        tone="navy"
+        focal="top-right"
+        className="absolute inset-0"
       />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-24 -right-24 h-[400px] w-[400px] rounded-full border border-gold/20"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-56 -left-32 h-[440px] w-[440px] rounded-full border border-white/10"
-      />
+      <div className="absolute inset-0 bg-gradient-to-t from-navy-dark/95 via-navy-dark/45 to-navy-dark/10" />
 
-      <Container className="relative py-20 sm:py-28 lg:py-32">
-        <p className="text-sm font-semibold tracking-[0.3em] text-gold uppercase">
-          {site.name}
+      <Container className="relative w-full pt-28 pb-14 text-white sm:pb-16 lg:pb-20">
+        <p className="font-heading text-sm font-semibold tracking-[0.5em] text-gold-light sm:text-base">
+          C V K M
+          <span className="mx-2 text-white/40">·</span>
+          HIGHER SECONDARY SCHOOL
         </p>
-        <h1 className="font-heading mt-6 max-w-3xl text-4xl leading-tight font-bold sm:text-5xl lg:text-6xl">
-          A Legacy of Learning.
-          <br />A Future of Possibilities.
+
+        <h1 className="font-heading mt-6 max-w-4xl text-[2.6rem] leading-[1.04] font-bold sm:text-6xl lg:text-7xl">
+          A Century of Learning.
+          <br />
+          A Future Still Being Written.
         </h1>
-        <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/80">
-          Serving generations of learners from East Kallada since 1926.
+
+        <p className="mt-6 max-w-lg text-base leading-relaxed text-white/75 sm:text-lg">
+          Serving generations of learners from East Kallada since {site.foundingYear}.
         </p>
 
-        <div className="mt-8 flex flex-wrap items-center gap-6 text-sm text-white/70">
-          <span className="flex items-center gap-2">
-            <span className="font-heading text-2xl font-bold text-gold">EST. {site.foundingYear}</span>
-          </span>
-          <span className="h-8 w-px bg-white/20" aria-hidden />
+        <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/15 pt-6 text-xs tracking-[0.2em] text-white/60 uppercase sm:text-sm">
+          <span className="text-gold-light">EST. {site.foundingYear}</span>
           <span>{site.address.locality}, {site.address.region}</span>
         </div>
 
-        <div className="mt-10 flex flex-wrap gap-4">
+        <div className="mt-9 flex flex-wrap gap-4">
           <Button href="/about" variant="ghost">
-            Explore Our School
+            Explore the School
           </Button>
           <Button href="/admissions" variant="gold">
             Admissions

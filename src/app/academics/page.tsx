@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/layout/PageHero";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { LandingHero } from "@/components/hero/LandingHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -10,6 +9,7 @@ import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
 import { academicStages } from "@/data/academics";
 import { faqCategories } from "@/data/faq";
+import { pageHeroes } from "@/data/pageHeroes";
 
 const title = "Academics";
 const description =
@@ -19,20 +19,18 @@ export const metadata: Metadata = buildMetadata({ title, description, path: "/ac
 
 const academicsFaq = faqCategories.filter((category) => category.id === "academics");
 
+const breadcrumb = [
+  { label: "Home", href: "/" },
+  { label: "Academics", href: "/academics" },
+];
+
 export default function AcademicsPage() {
   const higherSecondary = academicStages.find((stage) => stage.id === "higher-secondary");
   const foundational = academicStages.find((stage) => stage.id === "classes-v-x");
 
   return (
     <>
-      <Breadcrumbs
-        items={[{ label: "Home", href: "/" }, { label: "Academics", href: "/academics" }]}
-      />
-      <PageHero
-        eyebrow="Academics"
-        title="Learning for Every Stage"
-        description="Structured academic pathways from Class V through Higher Secondary."
-      />
+      <LandingHero hero={pageHeroes.academics} breadcrumb={breadcrumb} />
 
       <section className="py-16 sm:py-20">
         <Container>
@@ -50,14 +48,14 @@ export default function AcademicsPage() {
             {higherSecondary?.description}
           </p>
 
-          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+          <div className="mt-10 grid divide-y divide-border border-t border-border lg:grid-cols-3 lg:divide-x lg:divide-y-0">
             {higherSecondary?.streams?.map((stream) => (
-              <div key={stream.name} className="border border-border bg-off-white p-6">
+              <div key={stream.name} className="py-6 lg:px-8 lg:py-0 lg:first:pl-0">
                 <h3 className="font-heading text-lg font-semibold text-navy">{stream.name}</h3>
                 <ul className="mt-4 space-y-2 text-sm text-slate">
                   {stream.subjects.map((subject) => (
                     <li key={subject.name} className="flex items-center gap-2">
-                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold" aria-hidden />
+                      <span className="h-1.5 w-1.5 shrink-0 bg-gold" aria-hidden />
                       {subject.name}
                     </li>
                   ))}

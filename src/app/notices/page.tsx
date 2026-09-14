@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -15,14 +14,23 @@ const description = "Important notices and announcements from C V K M Higher Sec
 
 export const metadata: Metadata = buildMetadata({ title, description, path: "/notices" });
 
+const breadcrumb = [
+  { label: "Home", href: "/" },
+  { label: "Notices", href: "/notices" },
+];
+
 export default function NoticesPage() {
   const important = getImportantNotices();
   const all = getPublishedNotices();
 
   return (
     <>
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Notices", href: "/notices" }]} />
-      <PageHero eyebrow="Notices" title="Important Notices" />
+      <PageHero
+        eyebrow="Notices"
+        title="Important Notices"
+        description="Official notices and announcements from the school office."
+        breadcrumb={breadcrumb}
+      />
 
       <section className="py-16 sm:py-20">
         <Container>

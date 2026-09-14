@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { studentActivities } from "@/data/student-life";
 
 export function StudentLife() {
@@ -18,15 +19,31 @@ export function StudentLife() {
           </Link>
         </div>
 
-        <div className="mt-12 flex flex-wrap gap-3">
-          {studentActivities.map((activity) => (
-            <span
-              key={activity.name}
-              className="rounded-full border border-border bg-off-white px-5 py-2 text-sm font-medium text-charcoal"
-            >
-              {activity.name}
-            </span>
-          ))}
+        <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-14">
+          <div className="relative order-2 h-72 sm:h-96 lg:order-1 lg:h-auto">
+            <PhotoPlaceholder
+              caption="Student activities at CVKM"
+              tone="navy"
+              focal="top-left"
+              className="absolute inset-0"
+            />
+          </div>
+
+          <div className="order-1 grid grid-cols-2 gap-x-8 gap-y-8 border-t border-border pt-8 lg:order-2">
+            {studentActivities.map((activity, index) => (
+              <div key={activity.name}>
+                <span className="text-xs font-semibold text-gold">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <h3 className="font-heading mt-1 text-base font-semibold text-navy">
+                  {activity.name}
+                </h3>
+                <p className="mt-1 text-xs leading-relaxed text-slate sm:text-sm">
+                  {activity.description}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </Container>
     </section>

@@ -41,16 +41,19 @@ export function AchievementsExplorer({ categories, items }: Props) {
             description="Verified achievements will be published here as they are confirmed by the school."
           />
         ) : (
-          <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((item) => (
-              <li key={item.slug} className="border border-border bg-paper p-6">
-                <p className="text-xs font-semibold tracking-wide text-gold uppercase">
-                  {item.date}
-                </p>
-                <h3 className="font-heading mt-2 text-base font-semibold text-navy">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate">{item.description}</p>
+          <ul className="divide-y divide-border border-t border-border">
+            {filtered.map((item, index) => (
+              <li key={item.slug} className="grid gap-2 py-8 sm:grid-cols-[4rem_6rem_1fr] sm:gap-6">
+                <span className="font-heading text-xl font-bold text-gold">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="text-xs tracking-[0.14em] text-slate uppercase">{item.date}</span>
+                <div>
+                  <h3 className="font-heading text-lg font-semibold text-navy">{item.title}</h3>
+                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate">
+                    {item.description}
+                  </p>
+                </div>
               </li>
             ))}
           </ul>

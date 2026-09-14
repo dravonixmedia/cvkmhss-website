@@ -32,10 +32,10 @@ export function AcademicsSection() {
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate">
               {higherSecondary?.description}
             </p>
-            <div className="mt-6 grid gap-6 sm:grid-cols-3">
+            <div className="mt-8 grid divide-y divide-border border-t border-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
               {higherSecondary?.streams?.map((stream) => (
-                <div key={stream.name} className="border border-border bg-paper p-5">
-                  <h4 className="font-heading text-sm font-semibold tracking-wide text-navy uppercase">
+                <div key={stream.name} className="py-5 sm:px-6 sm:py-0 sm:first:pl-0">
+                  <h4 className="font-heading text-sm font-semibold tracking-[0.15em] text-navy uppercase">
                     {stream.name}
                   </h4>
                   <ul className="mt-3 space-y-1.5 text-sm text-slate">

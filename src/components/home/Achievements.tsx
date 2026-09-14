@@ -19,20 +19,18 @@ export function Achievements() {
           </Link>
         </div>
 
-        <div className="mt-8 flex flex-wrap gap-2">
+        <ul className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-y border-border py-5">
           {achievementCategories
             .filter((category) => category.id !== "all")
-            .map((category) => (
-              <span
-                key={category.id}
-                className="border border-border px-4 py-1.5 text-xs font-medium tracking-wide text-slate uppercase"
-              >
-                {category.label}
-              </span>
+            .map((category, index) => (
+              <li key={category.id} className="flex items-baseline gap-2 text-xs tracking-[0.14em] uppercase">
+                <span className="text-gold">{String(index + 1).padStart(2, "0")}</span>
+                <span className="text-slate">{category.label}</span>
+              </li>
             ))}
-        </div>
+        </ul>
 
-        <div className="mt-8">
+        <div className="mt-10">
           {achievements.length === 0 ? (
             <EmptyState
               title="Achievements coming soon"

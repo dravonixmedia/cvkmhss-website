@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/layout/PageHero";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { LandingHero } from "@/components/hero/LandingHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -10,6 +9,7 @@ import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
 import { legacyTimeline, positioningPillars, site } from "@/data/site";
 import { faqCategories } from "@/data/faq";
+import { pageHeroes } from "@/data/pageHeroes";
 
 const schoolFaq = faqCategories.filter((category) => category.id === "school");
 
@@ -19,15 +19,15 @@ const description =
 
 export const metadata: Metadata = buildMetadata({ title, description, path: "/about" });
 
+const breadcrumb = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+];
+
 export default function AboutPage() {
   return (
     <>
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "About", href: "/about" }]} />
-      <PageHero
-        eyebrow="About CVKM"
-        title="A Century-Rooted Institution in East Kallada"
-        description={`${site.name} has served the East Kallada community since ${site.foundingYear}, growing into a full Higher Secondary institution since ${site.higherSecondaryStartYear}.`}
-      />
+      <LandingHero hero={pageHeroes.about} breadcrumb={breadcrumb} />
 
       <section className="py-16 sm:py-20">
         <Container className="max-w-3xl">
@@ -56,10 +56,7 @@ export default function AboutPage() {
           <ol className="mt-10 space-y-8 border-l border-border pl-6">
             {legacyTimeline.map((entry) => (
               <li key={entry.year} className="relative">
-                <span
-                  className="absolute top-1 -left-[29px] h-3 w-3 rounded-full bg-gold"
-                  aria-hidden
-                />
+                <span className="absolute top-1 -left-[29px] h-3 w-3 bg-gold" aria-hidden />
                 <div className="font-heading text-xl font-bold text-navy">{entry.year}</div>
                 <div className="mt-1 text-sm font-semibold text-charcoal">{entry.title}</div>
                 <p className="mt-1 text-sm leading-relaxed text-slate">{entry.description}</p>
@@ -70,42 +67,25 @@ export default function AboutPage() {
       </section>
 
       <section className="py-16 sm:py-20">
-        <Container className="max-w-3xl space-y-12">
-          <div>
-            <SectionHeading eyebrow="Vision" title="Our Vision" />
-            <div className="mt-6">
-              <EmptyState
-                title="Official vision statement pending"
-                description="The school's official vision statement will be published here once confirmed by the management."
-              />
-            </div>
-          </div>
-          <div>
-            <SectionHeading eyebrow="Mission" title="Our Mission" />
-            <div className="mt-6">
-              <EmptyState
-                title="Official mission statement pending"
-                description="The school's official mission statement will be published here once confirmed by the management."
-              />
-            </div>
-          </div>
-          <div>
-            <SectionHeading eyebrow="Values" title="What We Stand For" />
-            <div className="mt-6">
-              <EmptyState
-                title="Core values pending confirmation"
-                description="The school's core institutional values will be published here once confirmed."
-              />
-            </div>
-          </div>
-          <div>
-            <SectionHeading eyebrow="Leadership" title="School Leadership" />
-            <div className="mt-6">
-              <EmptyState
-                title="Leadership details pending"
-                description="Names and details of the school's management and leadership will be published here once confirmed."
-              />
-            </div>
+        <Container className="max-w-3xl">
+          <SectionHeading eyebrow="Identity" title="Vision, Mission & Leadership" />
+          <div className="mt-10 grid gap-x-10 gap-y-10 border-t border-border pt-10 sm:grid-cols-2">
+            <EmptyState
+              title="Official vision statement pending"
+              description="The school's official vision statement will be published here once confirmed by the management."
+            />
+            <EmptyState
+              title="Official mission statement pending"
+              description="The school's official mission statement will be published here once confirmed by the management."
+            />
+            <EmptyState
+              title="Core values pending confirmation"
+              description="The school's core institutional values will be published here once confirmed."
+            />
+            <EmptyState
+              title="Leadership details pending"
+              description="Names and details of the school's management and leadership will be published here once confirmed."
+            />
           </div>
         </Container>
       </section>

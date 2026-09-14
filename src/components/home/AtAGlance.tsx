@@ -4,12 +4,12 @@ import { glanceFacts } from "@/data/site";
 
 export function AtAGlance() {
   return (
-    <section className="border-y border-border bg-paper py-16">
+    <section className="border-b border-border bg-paper py-16 sm:py-20">
       <Container>
-        <h2 className="font-heading text-sm font-semibold tracking-[0.2em] text-gold uppercase">
+        <h2 className="font-heading text-xs font-semibold tracking-[0.28em] text-gold uppercase">
           School at a Glance
         </h2>
-        <div className="mt-8 grid grid-cols-2 gap-8 sm:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4">
           {glanceFacts.map((fact) => (
             <Stat key={fact.label} {...fact} />
           ))}

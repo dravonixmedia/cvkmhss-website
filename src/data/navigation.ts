@@ -21,17 +21,17 @@ export const primaryNav: NavItem[] = [
   { label: "Contact", href: "/contact" },
 ];
 
-export const footerQuickLinks: NavItem[] = [
+export const footerExploreLinks: NavItem[] = [
   { label: "About", href: "/about" },
   { label: "Academics", href: "/academics" },
   { label: "Admissions", href: "/admissions" },
   { label: "News", href: "/news" },
   { label: "Notices", href: "/notices" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Contact", href: "/contact" },
 ];
 
-export const footerMoreLinks: NavItem[] = [
+export const footerResourceLinks: NavItem[] = [
+  { label: "Gallery", href: "/gallery" },
+  { label: "Contact", href: "/contact" },
   { label: "Downloads", href: "/downloads" },
   { label: "Events", href: "/events" },
 ];

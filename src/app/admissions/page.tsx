@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/layout/PageHero";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { LandingHero } from "@/components/hero/LandingHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -11,6 +10,7 @@ import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
 import { academicStages } from "@/data/academics";
 import { faqCategories } from "@/data/faq";
+import { pageHeroes } from "@/data/pageHeroes";
 
 const title = "Admissions";
 const description =
@@ -20,31 +20,29 @@ export const metadata: Metadata = buildMetadata({ title, description, path: "/ad
 
 const admissionsFaq = faqCategories.filter((category) => category.id === "admissions");
 
+const breadcrumb = [
+  { label: "Home", href: "/" },
+  { label: "Admissions", href: "/admissions" },
+];
+
 export default function AdmissionsPage() {
   const higherSecondary = academicStages.find((stage) => stage.id === "higher-secondary");
 
   return (
     <>
-      <Breadcrumbs
-        items={[{ label: "Home", href: "/" }, { label: "Admissions", href: "/admissions" }]}
-      />
-      <PageHero
-        eyebrow="Admissions"
-        title="Begin Your Journey With CVKM"
-        description="Admission enquiries are welcome. Detailed dates and requirements will be published here once confirmed."
-      />
+      <LandingHero hero={pageHeroes.admissions} breadcrumb={breadcrumb} />
 
       <section className="py-16 sm:py-20">
         <Container>
           <SectionHeading eyebrow="Overview" title="Available Classes & Programmes" />
-          <div className="mt-8 grid gap-6 sm:grid-cols-2">
-            <div className="border border-border bg-paper p-6">
+          <div className="mt-10 grid divide-y divide-border border-t border-border sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+            <div className="py-6 sm:py-0 sm:pr-8">
               <h3 className="font-heading text-base font-semibold text-navy">Classes V–X</h3>
               <p className="mt-2 text-sm leading-relaxed text-slate">
                 Secondary schooling building core academic foundations.
               </p>
             </div>
-            <div className="border border-border bg-paper p-6">
+            <div className="py-6 sm:py-0 sm:pl-8">
               <h3 className="font-heading text-base font-semibold text-navy">Higher Secondary</h3>
               <ul className="mt-2 space-y-1 text-sm text-slate">
                 {higherSecondary?.streams?.map((stream) => <li key={stream.name}>{stream.name}</li>)}

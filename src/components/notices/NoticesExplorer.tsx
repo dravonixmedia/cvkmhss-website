@@ -70,29 +70,43 @@ export function NoticesExplorer({ notices }: { notices: NoticeItem[] }) {
             description="No published notices match this search or category yet."
           />
         ) : (
-          <ul className="divide-y divide-border border-y border-border">
-            {filtered.map((notice) => (
-              <li key={notice.slug} className="flex flex-wrap items-center justify-between gap-3 py-4">
-                <div>
-                  <span className="font-medium text-charcoal">{notice.title}</span>
-                  {notice.important && (
-                    <span className="ml-2 border border-gold px-2 py-0.5 text-[10px] font-semibold tracking-wide text-gold uppercase">
-                      Important
-                    </span>
-                  )}
-                  <p className="mt-1 text-sm text-slate">{notice.description}</p>
-                </div>
-                <div className="flex items-center gap-4 text-xs text-slate">
-                  <span>{notice.date}</span>
-                  {notice.attachmentUrl && (
-                    <a href={notice.attachmentUrl} className="font-medium text-navy hover:underline">
+          <div className="border-y border-border">
+            <div className="hidden grid-cols-[6rem_9rem_1fr_6rem] gap-4 border-b border-border py-3 text-xs font-semibold tracking-[0.14em] text-slate uppercase sm:grid">
+              <span>Date</span>
+              <span>Category</span>
+              <span>Notice</span>
+              <span>Action</span>
+            </div>
+            <ul className="divide-y divide-border">
+              {filtered.map((notice) => (
+                <li
+                  key={notice.slug}
+                  className="grid grid-cols-1 gap-1.5 py-5 sm:grid-cols-[6rem_9rem_1fr_6rem] sm:items-start sm:gap-4"
+                >
+                  <span className="text-xs font-medium text-gold sm:text-sm">{notice.date}</span>
+                  <span className="text-xs tracking-wide text-slate uppercase">
+                    {categoryLabels[notice.category]}
+                  </span>
+                  <div>
+                    <span className="font-medium text-charcoal">{notice.title}</span>
+                    {notice.important && (
+                      <span className="ml-2 border border-gold px-2 py-0.5 text-[10px] font-semibold tracking-wide text-gold uppercase">
+                        Important
+                      </span>
+                    )}
+                    <p className="mt-1 text-sm text-slate">{notice.description}</p>
+                  </div>
+                  {notice.attachmentUrl ? (
+                    <a href={notice.attachmentUrl} className="text-xs font-medium text-navy hover:underline">
                       Download
                     </a>
+                  ) : (
+                    <span className="text-xs text-border">—</span>
                   )}
-                </div>
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
     </div>

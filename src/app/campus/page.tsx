@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/layout/PageHero";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { LandingHero } from "@/components/hero/LandingHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Faq } from "@/components/ui/Faq";
+import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
 import { facilities } from "@/data/campus";
 import { glanceFacts } from "@/data/site";
 import { faqCategories } from "@/data/faq";
+import { pageHeroes } from "@/data/pageHeroes";
 
 const title = "Campus & Facilities";
 const description =
@@ -19,15 +20,15 @@ const facilitiesFaq = faqCategories.filter((category) => category.id === "facili
 
 export const metadata: Metadata = buildMetadata({ title, description, path: "/campus" });
 
+const breadcrumb = [
+  { label: "Home", href: "/" },
+  { label: "Campus", href: "/campus" },
+];
+
 export default function CampusPage() {
   return (
     <>
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Campus", href: "/campus" }]} />
-      <PageHero
-        eyebrow="Campus"
-        title="A Campus Built for Learning"
-        description="A four-acre campus equipped to support academics, technology and student life."
-      />
+      <LandingHero hero={pageHeroes.campus} breadcrumb={breadcrumb} />
 
       <section className="border-b border-border bg-paper py-10">
         <Container>
@@ -47,15 +48,22 @@ export default function CampusPage() {
       <section className="py-16 sm:py-20">
         <Container>
           <SectionHeading eyebrow="Facilities" title="Campus Life" />
-          <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {facilities.map((facility) => (
-              <div key={facility.name} className="border border-border bg-paper p-6">
-                <div className="aspect-video w-full border border-dashed border-border bg-off-white" aria-hidden />
+          <div className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            {facilities.map((facility, index) => (
+              <div key={facility.name}>
+                <div className="relative aspect-[4/3]">
+                  <PhotoPlaceholder
+                    caption={facility.name}
+                    tone={index % 2 === 0 ? "navy" : "ivory"}
+                    focal={index % 3 === 0 ? "center" : index % 3 === 1 ? "top-left" : "bottom-right"}
+                    compact
+                    className="absolute inset-0"
+                  />
+                </div>
                 <h3 className="font-heading mt-4 text-base font-semibold text-navy">
                   {facility.name}
                 </h3>
                 <p className="mt-1 text-sm leading-relaxed text-slate">{facility.description}</p>
-                <p className="mt-2 text-xs text-slate italic">Photography to be added.</p>
               </div>
             ))}
           </div>

@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, ImageIcon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { galleryCategories } from "@/data/gallery";
 
 export function GallerySection() {
@@ -18,14 +19,19 @@ export function GallerySection() {
           </Link>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {galleryCategories.map((category) => (
+        <div className="mt-10 grid auto-rows-[7rem] grid-cols-2 gap-3 sm:auto-rows-[8.5rem] sm:grid-cols-4 sm:grid-flow-dense">
+          {galleryCategories.map((category, index) => (
             <div
               key={category}
-              className="flex aspect-square flex-col items-center justify-center gap-2 border border-border bg-paper p-4 text-center"
+              className={`relative ${index === 0 ? "col-span-2 row-span-2" : index === 5 ? "sm:col-span-2" : ""}`}
             >
-              <ImageIcon className="h-6 w-6 text-gold" aria-hidden />
-              <span className="text-xs font-medium text-slate">{category}</span>
+              <PhotoPlaceholder
+                caption={category}
+                tone={index % 3 === 0 ? "navy" : "ivory"}
+                focal={index % 2 === 0 ? "bottom-left" : "top-right"}
+                compact={index !== 0}
+                className="absolute inset-0"
+              />
             </div>
           ))}
         </div>

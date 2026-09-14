@@ -157,3 +157,25 @@ export interface FaqCategory {
   name: string;
   items: FaqItem[];
 }
+
+export type HeroVariant = "fullBleed" | "split" | "editorial" | "overlay" | "lowerTitle" | "collage";
+
+export interface HeroCta {
+  label: string;
+  href: string;
+  variant?: "gold" | "ghost" | "secondary";
+}
+
+export interface PageHeroConfig {
+  page: string;
+  eyebrow: string;
+  title: string;
+  description?: string;
+  variant: HeroVariant;
+  /** Short caption for the placeholder photography slot, e.g. "Campus — East Kallada". */
+  imageCaption: string;
+  ctas?: HeroCta[];
+  /** Large heritage number shown as a typographic accent (e.g. "1926"). */
+  heritageMark?: string;
+  short?: boolean;
+}

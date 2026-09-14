@@ -28,14 +28,25 @@ export function NoticesSection() {
               description="Time-sensitive notices from the school office will be published here."
             />
           ) : (
-            <ul className="divide-y divide-border border-y border-border">
-              {importantNotices.map((notice) => (
-                <li key={notice.slug} className="flex flex-wrap items-center justify-between gap-2 py-4">
-                  <span className="font-medium text-charcoal">{notice.title}</span>
-                  <span className="text-xs text-slate">{notice.date}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="border-y border-border">
+              <div className="hidden grid-cols-[6rem_10rem_1fr] gap-4 border-b border-border py-3 text-xs font-semibold tracking-[0.14em] text-slate uppercase sm:grid">
+                <span>Date</span>
+                <span>Category</span>
+                <span>Notice</span>
+              </div>
+              <ul className="divide-y divide-border">
+                {importantNotices.map((notice) => (
+                  <li
+                    key={notice.slug}
+                    className="grid grid-cols-1 gap-1 py-4 sm:grid-cols-[6rem_10rem_1fr] sm:items-center sm:gap-4"
+                  >
+                    <span className="text-xs font-medium text-gold sm:text-sm">{notice.date}</span>
+                    <span className="text-xs tracking-wide text-slate uppercase">{notice.category}</span>
+                    <span className="font-medium text-charcoal">{notice.title}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
       </Container>

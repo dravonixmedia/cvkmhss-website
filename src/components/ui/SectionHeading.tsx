@@ -18,11 +18,13 @@ export function SectionHeading({
   return (
     <div className={`max-w-2xl ${align === "center" ? "mx-auto text-center" : ""}`}>
       {eyebrow && (
-        <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-gold uppercase">
+        <p className="mb-3 text-xs font-semibold tracking-[0.28em] text-gold uppercase">
           {eyebrow}
         </p>
       )}
-      <h2 className={`font-heading text-3xl font-bold sm:text-4xl ${titleClass}`}>{title}</h2>
+      <h2 className={`font-heading text-3xl leading-[1.08] font-bold sm:text-4xl lg:text-[2.75rem] ${titleClass}`}>
+        {title}
+      </h2>
       {description && (
         <p className={`mt-4 text-base leading-relaxed ${descriptionClass}`}>{description}</p>
       )}

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { FileText } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -14,11 +13,20 @@ const description = "Downloadable academic, admissions and general documents fro
 
 export const metadata: Metadata = buildMetadata({ title, description, path: "/downloads" });
 
+const breadcrumb = [
+  { label: "Home", href: "/" },
+  { label: "Downloads", href: "/downloads" },
+];
+
 export default function DownloadsPage() {
   return (
     <>
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Downloads", href: "/downloads" }]} />
-      <PageHero eyebrow="Downloads" title="Documents & Forms" />
+      <PageHero
+        eyebrow="Downloads"
+        title="Documents & Forms"
+        description="Academic, admissions and general documents published by the school."
+        breadcrumb={breadcrumb}
+      />
 
       <section className="py-16 sm:py-20">
         <Container className="space-y-12">

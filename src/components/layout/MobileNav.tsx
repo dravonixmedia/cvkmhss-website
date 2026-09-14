@@ -35,7 +35,7 @@ export function MobileNav({ items }: { items: NavItem[] }) {
             role="dialog"
             aria-modal="true"
             aria-label="Site navigation"
-            className="relative ml-auto flex h-full w-full max-w-xs flex-col bg-paper shadow-xl"
+            className="relative ml-auto flex h-full w-full max-w-xs flex-col bg-paper shadow-2xl"
           >
             <div className="flex items-center justify-between border-b border-border px-4 py-4">
               <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
@@ -46,7 +46,7 @@ export function MobileNav({ items }: { items: NavItem[] }) {
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
-                className="flex h-10 w-10 items-center justify-center rounded-sm border border-border text-navy"
+                className="flex h-10 w-10 items-center justify-center border border-border text-navy"
               >
                 <X className="h-5 w-5" aria-hidden />
               </button>
@@ -106,7 +106,7 @@ export function MobileNav({ items }: { items: NavItem[] }) {
               <Link
                 href="/admissions"
                 onClick={() => setOpen(false)}
-                className="flex w-full items-center justify-center rounded-sm bg-navy px-4 py-3 text-sm font-semibold tracking-wide text-white uppercase"
+                className="flex w-full items-center justify-center border border-navy bg-navy px-4 py-3 text-xs font-semibold tracking-[0.14em] text-white uppercase"
               >
                 Admissions
               </Link>
@@ -122,7 +122,7 @@ export function MobileNav({ items }: { items: NavItem[] }) {
         onClick={() => setOpen(true)}
         aria-expanded={open}
         aria-label="Open menu"
-        className="flex h-10 w-10 items-center justify-center rounded-sm border border-border text-navy"
+        className="flex h-10 w-10 items-center justify-center border border-border text-navy"
       >
         <Menu className="h-5 w-5" aria-hidden />
       </button>

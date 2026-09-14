@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { facilities } from "@/data/campus";
 
 export function Campus() {
@@ -18,14 +19,25 @@ export function Campus() {
           </Link>
         </div>
 
-        <ul className="mt-12 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
-          {facilities.map((facility) => (
-            <li key={facility.name} className="border-t border-gold pt-4">
-              <h3 className="font-heading text-base font-semibold text-navy">{facility.name}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-slate">{facility.description}</p>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-12 grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-14">
+          <div className="relative h-72 sm:h-96 lg:h-[30rem]">
+            <PhotoPlaceholder
+              caption="CVKM campus, East Kallada"
+              tone="navy"
+              focal="bottom-left"
+              className="absolute inset-0"
+            />
+          </div>
+
+          <ul className="divide-y divide-border border-t border-border lg:self-center">
+            {facilities.map((facility) => (
+              <li key={facility.name} className="py-4">
+                <h3 className="font-heading text-base font-semibold text-navy">{facility.name}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-slate">{facility.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
       </Container>
     </section>
   );

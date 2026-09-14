@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { MapPin, Mail, Phone } from "lucide-react";
-import { PageHero } from "@/components/layout/PageHero";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { LandingHero } from "@/components/hero/LandingHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -9,17 +8,22 @@ import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
 import { site } from "@/data/site";
 import { EnquiryForm } from "@/components/contact/EnquiryForm";
+import { pageHeroes } from "@/data/pageHeroes";
 
 const title = "Contact";
 const description = "Contact C V K M Higher Secondary School, East Kallada, Kollam, Kerala.";
 
 export const metadata: Metadata = buildMetadata({ title, description, path: "/contact" });
 
+const breadcrumb = [
+  { label: "Home", href: "/" },
+  { label: "Contact", href: "/contact" },
+];
+
 export default function ContactPage() {
   return (
     <>
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Contact", href: "/contact" }]} />
-      <PageHero eyebrow="Contact" title="Get in Touch" />
+      <LandingHero hero={pageHeroes.contact} breadcrumb={breadcrumb} />
 
       <section className="py-16 sm:py-20">
         <Container className="grid gap-14 lg:grid-cols-2">

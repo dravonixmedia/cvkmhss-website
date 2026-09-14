@@ -3,9 +3,13 @@ import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { newsArticles } from "@/data/news";
 
 export function NewsSection() {
+  const [featured, ...rest] = newsArticles;
+  const supporting = rest.slice(0, 2);
+
   return (
     <section className="border-y border-border bg-paper py-20 sm:py-24">
       <Container>
@@ -20,24 +24,50 @@ export function NewsSection() {
         </div>
 
         <div className="mt-10">
-          {newsArticles.length === 0 ? (
+          {!featured ? (
             <EmptyState
               title="No news published yet"
               description="Announcements and school news will appear here once published."
             />
           ) : (
-            <div className="grid gap-8 sm:grid-cols-3">
-              {newsArticles.slice(0, 3).map((article) => (
-                <Link key={article.slug} href={`/news/${article.slug}`} className="group block">
-                  <p className="text-xs font-semibold tracking-wide text-gold uppercase">
-                    {article.category}
-                  </p>
-                  <h3 className="font-heading mt-2 text-lg font-semibold text-navy group-hover:underline">
-                    {article.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate">{article.summary}</p>
-                </Link>
-              ))}
+            <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+              <Link href={`/news/${featured.slug}`} className="group block">
+                <div className="relative h-64 sm:h-80">
+                  <PhotoPlaceholder
+                    caption={featured.title}
+                    tone="navy"
+                    focal="bottom-left"
+                    className="absolute inset-0"
+                  />
+                </div>
+                <p className="mt-5 text-xs font-semibold tracking-[0.14em] text-gold uppercase">
+                  {featured.category}
+                </p>
+                <h3 className="font-heading mt-2 text-2xl font-semibold text-navy group-hover:underline">
+                  {featured.title}
+                </h3>
+                <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate">
+                  {featured.summary}
+                </p>
+              </Link>
+
+              <div className="divide-y divide-border border-t border-border lg:border-t-0 lg:border-l lg:pl-10">
+                {supporting.map((article) => (
+                  <Link
+                    key={article.slug}
+                    href={`/news/${article.slug}`}
+                    className="group block py-6 first:pt-0"
+                  >
+                    <p className="text-xs font-semibold tracking-[0.14em] text-gold uppercase">
+                      {article.category}
+                    </p>
+                    <h3 className="font-heading mt-2 text-lg font-semibold text-navy group-hover:underline">
+                      {article.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-slate">{article.summary}</p>
+                  </Link>
+                ))}
+              </div>
             </div>
           )}
         </div>
