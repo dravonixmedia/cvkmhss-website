@@ -4,11 +4,12 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Reveal } from "@/components/motion/Reveal";
-import { getImportantNotices } from "@/data/notices";
+import { getPublishedNotices } from "@/lib/notices/public";
 import { staggerDelay } from "@/lib/stagger";
 
-export function NoticesSection() {
-  const importantNotices = getImportantNotices();
+export async function NoticesSection() {
+  const notices = await getPublishedNotices();
+  const importantNotices = notices.filter((notice) => notice.important);
 
   return (
     <section className="py-20 sm:py-24">

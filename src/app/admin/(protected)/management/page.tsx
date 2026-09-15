@@ -9,7 +9,7 @@ import {
   moveManagementMember,
   setManagementMemberStatus,
 } from "@/lib/management/actions";
-import { DeleteMemberForm } from "@/components/admin/DeleteMemberForm";
+import { ConfirmDeleteForm } from "@/components/admin/ConfirmDeleteForm";
 
 export const metadata: Metadata = buildMetadata({
   title: "Management & Leadership",
@@ -162,7 +162,7 @@ export default async function AdminManagementListPage() {
                             {member.status === "published" ? "Unpublish" : "Publish"}
                           </button>
                         </form>
-                        <DeleteMemberForm action={remove} memberName={member.full_name} />
+                        <ConfirmDeleteForm action={remove} itemLabel={member.full_name} />
                       </div>
                     </td>
                   </tr>

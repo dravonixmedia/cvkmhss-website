@@ -4,7 +4,8 @@ import { Container } from "@/components/ui/Container";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
-import { achievementCategories, achievements } from "@/data/achievements";
+import { achievementCategories } from "@/data/achievements";
+import { getPublishedAchievements } from "@/lib/achievements/public";
 import { AchievementsExplorer } from "@/components/achievements/AchievementsExplorer";
 import { pageHeroes } from "@/data/pageHeroes";
 
@@ -19,7 +20,9 @@ const breadcrumb = [
   { label: "Achievements", href: "/achievements" },
 ];
 
-export default function AchievementsPage() {
+export default async function AchievementsPage() {
+  const achievements = await getPublishedAchievements();
+
   return (
     <>
       <LandingHero hero={pageHeroes.achievements} breadcrumb={breadcrumb} />

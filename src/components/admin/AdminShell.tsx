@@ -10,12 +10,12 @@ interface NavLeaf {
 
 const contentNav: NavLeaf[] = [
   { label: "Management & Leadership", href: "/admin/management" },
-  { label: "News" },
-  { label: "Events" },
-  { label: "Achievements" },
-  { label: "Notices" },
-  { label: "Downloads" },
-  { label: "Gallery" },
+  { label: "News", href: "/admin/news" },
+  { label: "Events", href: "/admin/events" },
+  { label: "Achievements", href: "/admin/achievements" },
+  { label: "Notices", href: "/admin/notices" },
+  { label: "Downloads", href: "/admin/downloads" },
+  { label: "Gallery", href: "/admin/gallery" },
 ];
 
 const administrationNav: NavLeaf[] = [{ label: "Users" }, { label: "Settings" }];

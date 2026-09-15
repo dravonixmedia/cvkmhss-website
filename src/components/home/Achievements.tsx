@@ -4,10 +4,13 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Reveal } from "@/components/motion/Reveal";
-import { achievementCategories, achievements } from "@/data/achievements";
+import { achievementCategories } from "@/data/achievements";
+import { getPublishedAchievements } from "@/lib/achievements/public";
 import { staggerDelay } from "@/lib/stagger";
 
-export function Achievements() {
+export async function Achievements() {
+  const achievements = await getPublishedAchievements();
+
   return (
     <section className="py-20 sm:py-24">
       <Container>

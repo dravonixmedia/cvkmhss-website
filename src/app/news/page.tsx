@@ -8,7 +8,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
-import { newsArticles } from "@/data/news";
+import { getPublishedNewsArticles } from "@/lib/news/public";
 import { pageHeroes } from "@/data/pageHeroes";
 import { staggerDelay } from "@/lib/stagger";
 
@@ -22,7 +22,8 @@ const breadcrumb = [
   { label: "News", href: "/news" },
 ];
 
-export default function NewsPage() {
+export default async function NewsPage() {
+  const newsArticles = await getPublishedNewsArticles();
   const [featured, ...rest] = newsArticles;
 
   return (

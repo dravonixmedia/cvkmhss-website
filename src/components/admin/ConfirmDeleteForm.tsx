@@ -5,17 +5,21 @@ import type { FormEvent } from "react";
 /**
  * Wraps a delete server action with a native confirm() prompt so a
  * destructive action isn't a single accidental click — deliberately the
- * simplest mechanism that achieves that, not a custom modal.
+ * simplest mechanism that achieves that, not a custom modal. Shared
+ * across every Admin CMS module (Management & Leadership, News, Events,
+ * Achievements, Notices, Downloads, Gallery).
  */
-export function DeleteMemberForm({
+export function ConfirmDeleteForm({
   action,
-  memberName,
+  itemLabel,
+  confirmMessage,
 }: {
   action: () => Promise<void>;
-  memberName: string;
+  itemLabel: string;
+  confirmMessage?: string;
 }) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    if (!window.confirm(`Delete ${memberName}? This cannot be undone.`)) {
+    if (!window.confirm(confirmMessage ?? `Delete ${itemLabel}? This cannot be undone.`)) {
       event.preventDefault();
     }
   }

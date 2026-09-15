@@ -7,7 +7,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
-import { getImportantNotices, getPublishedNotices } from "@/data/notices";
+import { getPublishedNotices } from "@/lib/notices/public";
 import { NoticesExplorer } from "@/components/notices/NoticesExplorer";
 import { staggerDelay } from "@/lib/stagger";
 
@@ -21,9 +21,9 @@ const breadcrumb = [
   { label: "Notices", href: "/notices" },
 ];
 
-export default function NoticesPage() {
-  const important = getImportantNotices();
-  const all = getPublishedNotices();
+export default async function NoticesPage() {
+  const all = await getPublishedNotices();
+  const important = all.filter((notice) => notice.important);
 
   return (
     <>

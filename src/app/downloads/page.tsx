@@ -7,7 +7,8 @@ import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
-import { downloadCategories, downloads } from "@/data/downloads";
+import { downloadCategories } from "@/data/downloads";
+import { getPublishedDownloads } from "@/lib/downloads/public";
 import { staggerDelay } from "@/lib/stagger";
 
 const title = "Downloads";
@@ -20,7 +21,9 @@ const breadcrumb = [
   { label: "Downloads", href: "/downloads" },
 ];
 
-export default function DownloadsPage() {
+export default async function DownloadsPage() {
+  const downloads = await getPublishedDownloads();
+
   return (
     <>
       <PageHero

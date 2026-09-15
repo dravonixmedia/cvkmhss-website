@@ -2,11 +2,7 @@
 
 import { useActionState } from "react";
 import type { ManagementFormState } from "@/lib/management/actions";
-
-const fieldClasses =
-  "mt-2 w-full border border-border bg-off-white px-3 py-2.5 text-sm text-charcoal " +
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold focus-visible:outline-offset-0";
-const labelClasses = "block text-xs font-semibold tracking-wide text-navy uppercase";
+import { fieldClasses, labelClasses } from "@/components/admin/formStyles";
 
 export interface ManagementFormInitialValues {
   fullName: string;

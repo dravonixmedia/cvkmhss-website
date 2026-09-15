@@ -764,3 +764,10 @@ export const Constants = {
 
 export type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"]
 export type ManagementMemberRow = Database["public"]["Tables"]["management_members"]["Row"]
+export type NewsRow = Database["public"]["Tables"]["news"]["Row"]
+export type EventRow = Database["public"]["Tables"]["events"]["Row"]
+export type AchievementRow = Database["public"]["Tables"]["achievements"]["Row"]
+export type NoticeRow = Database["public"]["Tables"]["notices"]["Row"]
+export type DownloadRow = Database["public"]["Tables"]["downloads"]["Row"]
+export type GalleryAlbumRow = Database["public"]["Tables"]["gallery_albums"]["Row"]
+export type GalleryImageRow = Database["public"]["Tables"]["gallery_images"]["Row"]

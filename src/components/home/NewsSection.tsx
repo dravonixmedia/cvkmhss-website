@@ -5,10 +5,11 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { Reveal } from "@/components/motion/Reveal";
-import { newsArticles } from "@/data/news";
+import { getPublishedNewsArticles } from "@/lib/news/public";
 import { staggerDelay } from "@/lib/stagger";
 
-export function NewsSection() {
+export async function NewsSection() {
+  const newsArticles = await getPublishedNewsArticles();
   const [featured, ...rest] = newsArticles;
   const supporting = rest.slice(0, 2);
 

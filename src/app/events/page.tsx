@@ -7,10 +7,11 @@ import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema, eventSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
-import { getPastEvents, getUpcomingEvents } from "@/data/events";
+import { getPublishedEvents, splitEventsByDate } from "@/lib/events/public";
 import { formatEventDate } from "@/lib/date";
 import { pageHeroes } from "@/data/pageHeroes";
 import { staggerDelay } from "@/lib/stagger";
+import type { EventItem } from "@/types";
 
 const title = "Events";
 const description = "Upcoming and past events at C V K M Higher Secondary School, East Kallada.";
@@ -22,7 +23,7 @@ const breadcrumb = [
   { label: "Events", href: "/events" },
 ];
 
-function EventList({ events }: { events: ReturnType<typeof getUpcomingEvents> }) {
+function EventList({ events }: { events: EventItem[] }) {
   return (
     <ul className="divide-y divide-border border-t border-border">
       {events.map((event, index) => {
@@ -56,9 +57,9 @@ function EventList({ events }: { events: ReturnType<typeof getUpcomingEvents> })
   );
 }
 
-export default function EventsPage() {
-  const upcoming = getUpcomingEvents();
-  const past = getPastEvents();
+export default async function EventsPage() {
+  const events = await getPublishedEvents();
+  const { upcoming, past } = splitEventsByDate(events);
 
   return (
     <>

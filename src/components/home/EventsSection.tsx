@@ -4,12 +4,13 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Reveal } from "@/components/motion/Reveal";
-import { getUpcomingEvents } from "@/data/events";
+import { getPublishedEvents, splitEventsByDate } from "@/lib/events/public";
 import { formatEventDate } from "@/lib/date";
 import { staggerDelay } from "@/lib/stagger";
 
-export function EventsSection() {
-  const upcoming = getUpcomingEvents();
+export async function EventsSection() {
+  const events = await getPublishedEvents();
+  const { upcoming } = splitEventsByDate(events);
 
   return (
     <section className="border-y border-border bg-paper py-20 sm:py-24">

@@ -5,7 +5,8 @@ import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
-import { galleryAlbums, galleryCategories } from "@/data/gallery";
+import { galleryCategories } from "@/data/gallery";
+import { getPublishedGalleryAlbums } from "@/lib/gallery/public";
 import { pageHeroes } from "@/data/pageHeroes";
 import { staggerDelay } from "@/lib/stagger";
 
@@ -19,7 +20,9 @@ const breadcrumb = [
   { label: "Gallery", href: "/gallery" },
 ];
 
-export default function GalleryPage() {
+export default async function GalleryPage() {
+  const galleryAlbums = await getPublishedGalleryAlbums();
+
   return (
     <>
       <LandingHero hero={pageHeroes.gallery} breadcrumb={breadcrumb} />

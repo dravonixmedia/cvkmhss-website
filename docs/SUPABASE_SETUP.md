@@ -374,14 +374,183 @@ remain — see §3's note.)
   leaked no internal error/host/credential details into the HTML; the
   failure was only logged server-side.
 
-## What was NOT done in Phase 2A (by design)
+## 9. News, Events, Achievements, Notices, Downloads, Gallery (Admin CMS + public integration)
 
-- No content was migrated from `src/data/*.ts` into Supabase, except the
-  Management & Leadership module described in §8, which now reads live
-  from Supabase by design (per its own task's explicit instruction).
-- No CMS create/edit/publish UI was built for News/Events/Achievements/
-  Notices/Downloads/Gallery (schema + RLS only) — Management & Leadership
-  is the one exception, built in a dedicated follow-up task.
+The six remaining content modules, built on the exact Management &
+Leadership architecture (§8): reused schema (all six tables already
+existed from earlier migrations — no new tables), the same two-policy RLS
+shape (public `SELECT` where `status = 'published'`, `is_active_admin()`-
+gated `ALL` for authenticated admins), draft/publish/unpublish via a
+shared `status` + `published_at` pair, server-generated Storage filenames,
+and signed URLs for both admin previews and public delivery (every bucket
+is private).
+
+**Migration** (`supabase/migrations/20260101000016_cms_storage_admin_select_and_limits.sql`,
+additive only): adds a `storage_<bucket>_admin_select` policy for each of
+the five original CMS buckets (news/events/achievements/gallery/
+documents) so the new admin UIs can preview a draft's image/document —
+the original Phase 2A storage migration only had public-read + admin-
+write for these, a gap first found and fixed for the `management` bucket
+in the prior phase. Also sets bucket-level `file_size_limit`/
+`allowed_mime_types` (5MB images for news/events/achievements/gallery,
+10MB documents for `documents`) as defense-in-depth alongside the
+identical checks already enforced in each domain's `validation.ts`.
+
+**Admin modules** (`src/lib/{news,events,achievements,notices,downloads,gallery}/`,
+`src/app/admin/(protected)/{news,events,achievements,notices,downloads,gallery}/`,
+`src/components/admin/{NewsForm,EventForm,AchievementForm,NoticeForm,DownloadForm,GalleryAlbumForm,GalleryImageUploadForm}.tsx`):
+list / add / edit / draft / publish / unpublish / delete-with-confirmation
+for each, all gated by `requireAdmin()` on every route and action, all
+input re-validated server-side (`src/lib/validation/cms.ts` shared
+primitives), all Storage uploads via `src/lib/storage/cms.ts` (random
+`crypto.randomUUID()` filenames, never the browser-supplied name).
+URL slugs (News/Events/Achievements/Notices/Gallery albums) are generated
+automatically from the title on create (`src/lib/supabase/slug.ts`,
+collision-checked against the target table) and editable afterward.
+
+- **News**: featured image, publication date (`published_at`), excerpt
+  (`summary`), body stored as a paragraph array (split from the admin's
+  blank-line-separated textarea), optional author.
+- **Events**: date, optional start/end time, location, description,
+  optional image.
+- **Achievements**: category (existing `achievement_category` enum),
+  date, description, optional image.
+- **Notices**: category (`notice_category` enum), date, description,
+  optional expiry date, "important" (pinned) flag, optional attachment
+  (stored in the shared `documents` bucket under `notices/`).
+- **Downloads**: category (`download_category` enum), description,
+  required document (replaceable on edit; the old Storage object is
+  removed only after the row update succeeds); stored in `documents`
+  under `downloads/`.
+- **Gallery**: album-based (`gallery_albums` + `gallery_images`, the
+  existing tables — no schema change). `/admin/gallery` manages albums
+  (title, category, description, date, optional dedicated cover upload,
+  draft/publish/unpublish, delete-with-child-image-cleanup);
+  `/admin/gallery/[id]/images` manages that album's photos: multi-file
+  upload (`gallery/{albumId}/` path prefix, up to 20 files per upload,
+  each validated individually), per-image caption, ▲/▼ reorder
+  (`sort_order`, same swap-with-neighbor pattern as Management's
+  `display_order`), "Set as Cover" (repoints `cover_image_path` to an
+  already-uploaded image with no re-upload), and per-image delete
+  (removes the Storage object and clears `cover_image_path` first if that
+  image was the cover). Deleting an album fetches every child image path
+  and the cover path *before* deleting the row — `gallery_images` cascade-
+  deletes at the database level, but the Storage objects do not, so those
+  are removed afterward via `deleteGalleryFiles`.
+
+**Public integration** — each page now reads only its domain's
+`getPublished*()` function (RLS-filtered, never `src/data/*` for content),
+preserving the existing component/JSX architecture exactly:
+
+- `src/app/news/page.tsx`, `src/app/news/[slug]/page.tsx` (dynamic slug
+  route replacing static `generateStaticParams`), `src/components/home/NewsSection.tsx`,
+  `src/app/sitemap.ts` (published articles only).
+- `src/app/events/page.tsx`, `src/components/home/EventsSection.tsx` — a
+  pure `splitEventsByDate()` helper replicates the original upcoming/past
+  split on the fetched array.
+- `src/app/achievements/page.tsx`, `src/components/home/Achievements.tsx`.
+- `src/app/notices/page.tsx`, `src/components/home/NoticesSection.tsx` —
+  "important" notices are now derived via `.filter((n) => n.important)`
+  instead of a separate query.
+- `src/app/downloads/page.tsx` (no homepage section consumed downloads).
+- `src/app/gallery/page.tsx` — `galleryAlbums` now comes from
+  `getPublishedGalleryAlbums()`; the existing placeholder-tile JSX and
+  empty state are otherwise untouched (`src/components/home/GallerySection.tsx`
+  still renders category placeholders only, unrelated to real album data,
+  so it needed no change). There is still no per-album detail route in
+  the public site (none existed before this task either), so
+  `getPublishedGalleryAlbums()`'s per-image data is fetched and mapped but
+  not yet rendered anywhere public — adding that route was out of this
+  task's scope (no public-page redesign).
+
+Every `getPublished*()` function is wrapped in try/catch and returns `[]`
+on any failure (never throws, never leaks a raw Supabase error to a
+public page) — identical pattern to Management & Leadership.
+
+### Live security testing — all six domains
+
+Unlike the two prior phases' testing, this session found that the
+`execute_sql` MCP tool is connected to `sovppydnmstzwnstczua` in a
+**read-only transaction** (`current_setting('transaction_read_only')` =
+`on`) — any `INSERT`/`UPDATE`/`CREATE TABLE` through it fails immediately
+with `cannot execute ... in a read-only transaction`. This is a new,
+explicit discovery, not previously documented. `apply_migration` (used
+for real schema changes throughout this project) is not read-only, so —
+exactly matching the precedent already described in §3 ("seed temporary
+test rows → run SET-ROLE-anon tests → clean up" via one-off, non-schema
+migrations) — all seeding, `SET ROLE anon` / `SET ROLE authenticated`
+testing, and cleanup for this phase ran as three `apply_migration` calls
+(`zzztest_cms_rls_seed`, `zzztest_cms_rls_verify`, `zzztest_cms_rls_cleanup`),
+with results captured into a plain table and read back via `execute_sql`
+(`SELECT` is unaffected by the read-only restriction). These three are
+one-off housekeeping, not included in `supabase/migrations/`, same as
+their predecessors.
+
+**35 of 35 tests passed** — genuinely live, via Supabase MCP tools, against
+seeded-then-deleted rows tagged `zzztest-`/`ZZZTEST`/`zzztest/`:
+
+| Area | Tests | Result |
+|---|---|---|
+| Anonymous `SELECT` sees only `published`, never `draft` | news, events, achievements, notices, downloads, gallery_albums (6) | **PASS** — 1 of 2 seeded rows visible in each, the published one |
+| Anonymous `SELECT` on `gallery_images` follows the parent album's status (own-row has no status column) | 1 | **PASS** — only the published album's image visible |
+| Anonymous `SELECT` on Storage sees only objects referenced by a published row | news, events, achievements bucket (1 each), documents (2: notice + download), gallery (2: cover + image) | **PASS** — exact expected counts in every bucket |
+| Anonymous `INSERT` denied | news, events, achievements, notices, downloads, gallery_albums, gallery_images (7) | **PASS** — `new row violates row-level security policy` on every table |
+| Anonymous `UPDATE`/`DELETE` denied | news (representative) | **PASS** — 0 rows affected each |
+| Anonymous `INSERT` denied on all 5 CMS Storage buckets | 1 (loops all 5) | **PASS** — denied in every bucket |
+| Anonymous `UPDATE`/`DELETE` denied on Storage | 2 | **PASS** — `UPDATE` 0 rows affected; `DELETE` blocked by Supabase's own `protect_delete()` trigger (stricter than RLS alone) |
+| Authenticated **active admin** (the real, existing super_admin, impersonated at the RLS layer via `request.jwt.claim.sub` + `SET ROLE authenticated` — a genuine policy-evaluation test, not a real Auth session) sees both draft and published rows | news | **PASS** |
+| Authenticated active admin `UPDATE` permitted | news, events, achievements, notices, downloads, gallery_albums, gallery_images (7) | **PASS** — every domain's admin-write policy grants access |
+| Authenticated active admin can `SELECT` a **draft-linked** Storage object (this phase's new admin-select policies) | news, documents, gallery buckets (3) | **PASS** |
+
+**Cleanup verified**: all six content tables back to 0 `zzztest*` rows;
+the results table dropped. **14 inert `storage.objects` metadata rows
+remain** (`zzztest/...` paths across the five CMS buckets, no real files
+behind them) — Supabase's `protect_delete()` trigger blocks direct SQL
+`DELETE` on `storage.objects` for any role, confirmed both by the
+`anon_storage_delete_denied` test above and by a failed cleanup attempt;
+only the Storage API can remove them (unreachable from this sandbox —
+§7). These rows are not referenced by any real or test content row after
+the table cleanup above, so they are not publicly readable (per the
+`storage_*_public_read_published` policies' `EXISTS` predicate) and are
+invisible anywhere in the app — identical, previously-documented
+limitation to the two leftover `management` bucket rows from an earlier
+phase. Delete via the Dashboard's Storage browser if desired:
+`zzztest/news-draft.jpg`, `zzztest/news-pub.jpg`, `zzztest/events-draft.jpg`,
+`zzztest/events-pub.jpg`, `zzztest/ach-draft.jpg`, `zzztest/ach-pub.jpg`,
+`zzztest/notices-draft.pdf`, `zzztest/notices-pub.pdf`,
+`zzztest/downloads-draft.pdf`, `zzztest/downloads-pub.pdf`,
+`zzztest/gallery-draft-cover.jpg`, `zzztest/gallery-pub-cover.jpg`,
+`zzztest/gallery-draft-img.jpg`, `zzztest/gallery-pub-img.jpg`.
+
+`mcp__Supabase__get_advisors` (security) was re-run after cleanup: two
+pre-existing `WARN`-level findings only (`is_active_admin()`/
+`is_super_admin()` callable via RPC by any signed-in user, and leaked-
+password protection disabled) — both predate this phase, are unrelated to
+the six CMS modules or their RLS, and were not introduced by this work;
+left untouched as out of this task's scope.
+
+**Still PENDING** (unchanged from §6/§8 — requires a real second admin
+account, which this sandbox cannot create without touching Supabase Auth
+directly): `editor` vs `super_admin` distinction on a CMS action (moot for
+these six modules specifically — their `is_active_admin()` policy does
+not distinguish the two roles, only `is_active`), and `is_active = false`
+denying an otherwise-valid session. Actual browser/deployed verification
+of all six modules (login → create → draft → publish → confirm on the
+public page → unpublish → confirm hidden, for each domain) remains
+**CODE-LEVEL VERIFIED ONLY** (clean lint/typecheck/build, manual review)
+plus the **DATABASE/RLS-LEVEL VERIFIED** results above — genuinely live
+browser verification is still blocked by this sandbox's network-egress
+restriction (§7), unchanged from every prior phase.
+
+## What was NOT done (by design)
+
+- No content was migrated from `src/data/*.ts` into Supabase beyond the
+  seven modules now built (Management & Leadership, News, Events,
+  Achievements, Notices, Downloads, Gallery) — all read live from
+  Supabase by design.
 - No user-management UI was built (the authorization foundation —
-  `profiles`, roles, `is_active`, RLS — is in place; the UI is Phase 2B).
-- No administrator account was created — see §5 for the exact next step.
+  `profiles`, roles, `is_active`, RLS — is in place; the UI is a future
+  phase, along with Settings).
+- No public per-album Gallery detail route, Student Life CMS, online
+  admissions, student/parent portal, alumni, payments, or results/exam
+  management — all explicitly out of scope for this phase.

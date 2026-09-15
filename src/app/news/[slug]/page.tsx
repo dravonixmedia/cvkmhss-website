@@ -7,17 +7,19 @@ import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { newsArticleSchema, webPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
-import { getNewsBySlug, getRelatedNews, newsArticles } from "@/data/news";
+import { getNewsArticleBySlug, getRelatedNewsArticles } from "@/lib/news/public";
 
-export function generateStaticParams() {
-  return newsArticles.map((article) => ({ slug: article.slug }));
-}
+// No generateStaticParams: News is now Supabase-backed and published
+// on-demand (see docs/SUPABASE_SETUP.md) — a newly published article
+// must be reachable immediately, without a redeploy, so this route
+// renders dynamically per request instead of being pre-generated at
+// build time.
 
 export async function generateMetadata({
   params,
 }: PageProps<"/news/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const article = getNewsBySlug(slug);
+  const article = await getNewsArticleBySlug(slug);
   if (!article) return {};
 
   return buildMetadata({
@@ -30,13 +32,13 @@ export async function generateMetadata({
 
 export default async function NewsArticlePage({ params }: PageProps<"/news/[slug]">) {
   const { slug } = await params;
-  const article = getNewsBySlug(slug);
+  const article = await getNewsArticleBySlug(slug);
 
   if (!article) {
     notFound();
   }
 
-  const related = getRelatedNews(article.slug);
+  const related = await getRelatedNewsArticles(article.slug);
 
   return (
     <>
