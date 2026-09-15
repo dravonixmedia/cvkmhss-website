@@ -551,6 +551,83 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          address_district: string | null
+          address_locality: string | null
+          address_postal_code: string | null
+          address_state: string | null
+          email: string | null
+          established_year: number | null
+          facebook_url: string | null
+          google_maps_url: string | null
+          hss_code: string | null
+          id: number
+          instagram_url: string | null
+          phone: string | null
+          phone_secondary: string | null
+          school_code: string | null
+          school_name: string | null
+          short_name: string | null
+          udise_code: string | null
+          updated_at: string
+          updated_by: string | null
+          youtube_url: string | null
+        }
+        Insert: {
+          address_district?: string | null
+          address_locality?: string | null
+          address_postal_code?: string | null
+          address_state?: string | null
+          email?: string | null
+          established_year?: number | null
+          facebook_url?: string | null
+          google_maps_url?: string | null
+          hss_code?: string | null
+          id?: number
+          instagram_url?: string | null
+          phone?: string | null
+          phone_secondary?: string | null
+          school_code?: string | null
+          school_name?: string | null
+          short_name?: string | null
+          udise_code?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          youtube_url?: string | null
+        }
+        Update: {
+          address_district?: string | null
+          address_locality?: string | null
+          address_postal_code?: string | null
+          address_state?: string | null
+          email?: string | null
+          established_year?: number | null
+          facebook_url?: string | null
+          google_maps_url?: string | null
+          hss_code?: string | null
+          id?: number
+          instagram_url?: string | null
+          phone?: string | null
+          phone_secondary?: string | null
+          school_code?: string | null
+          school_name?: string | null
+          short_name?: string | null
+          udise_code?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          youtube_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -771,3 +848,4 @@ export type NoticeRow = Database["public"]["Tables"]["notices"]["Row"]
 export type DownloadRow = Database["public"]["Tables"]["downloads"]["Row"]
 export type GalleryAlbumRow = Database["public"]["Tables"]["gallery_albums"]["Row"]
 export type GalleryImageRow = Database["public"]["Tables"]["gallery_images"]["Row"]
+export type SiteSettingsRow = Database["public"]["Tables"]["site_settings"]["Row"]

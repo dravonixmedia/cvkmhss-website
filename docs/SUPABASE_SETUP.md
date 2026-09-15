@@ -542,15 +542,187 @@ plus the **DATABASE/RLS-LEVEL VERIFIED** results above — genuinely live
 browser verification is still blocked by this sandbox's network-egress
 restriction (§7), unchanged from every prior phase.
 
+## 10. Dashboard, Users, Settings
+
+Replaces the outdated "Content management is not available yet" Dashboard
+placeholder and the "SOON" Users/Settings sidebar badges.
+
+**Dashboard** (`src/app/admin/(protected)/page.tsx`, `src/lib/dashboard/queries.ts`):
+a welcome line (name/role), a **Content Overview** table (published/draft
+counts per module, via `count: "exact", head: true` queries — no row
+content is fetched, safe for any admin), **Quick Management** links (Add
+X per module, reusing each module's existing `/new` route), and **Recent
+Content** (top 6 most-recently-`updated_at` items across all seven
+tables, merged and sorted in application code — no audit-log table exists
+or was added; `updated_at` is the only per-row signal every content table
+already has). Renders correctly with all tables empty (every count is 0,
+Recent Content shows an explicit empty state) — no fake data.
+
+**Users** (`/admin/users`, `src/lib/users/{queries,validation,actions}.ts`,
+`src/components/admin/UserEditForm.tsx`) — **super_admin only**, enforced
+by `requireSuperAdmin()` on both the list and edit routes and inside
+`updateProfile()` itself (never only a hidden nav link — `AdminShell`
+also hides the "Users" link from editors, but that is a UX courtesy, not
+the boundary). Reuses `profiles` entirely — no new identity table, no
+duplicated auth data. Implemented: list all admins (name, role,
+active/inactive, created/updated dates — reads via the existing
+`profiles_super_admin_select_all` RLS policy, unchanged), edit an admin's
+full name / role / active status in one form
+(`profiles_super_admin_update`, also unchanged). **Lockout protection**:
+`updateProfile()` re-checks, immediately before every write, whether the
+target is currently the only active `super_admin`
+(`isLastActiveSuperAdmin()` in `src/lib/users/actions.ts` — counts active
+super_admins fresh on each call, not cached, so a save that would remove
+the last one's super_admin role or active status is blocked with an
+explicit error instead of silently locking the whole backend out).
+Destructive deletion was not implemented at all, per the brief's
+"prefer deactivate."
+
+**Deferred — create/invite administrator**: this app has no public
+signup and `profiles.id` has a foreign key to `auth.users`, so a brand
+new admin account can only be created via Supabase's Auth Admin API
+(`auth.admin.createUser`/`inviteUserByEmail`), which requires
+`SUPABASE_SERVICE_ROLE_KEY`. Per this phase's explicit instruction, that
+credential was **not** added to any request-serving code — `/admin/users`
+instead shows the existing manual bootstrap procedure (§5 above: create
+the Auth user in the Dashboard, insert the `profiles` row via SQL). See
+§11 below for the architecture recommendation if privileged provisioning
+is wanted later.
+
+**Settings** (`/admin/settings`, `src/lib/settings/{queries,validation,actions,public}.ts`,
+`src/components/admin/SiteSettingsForm.tsx`) — a new singleton table,
+`public.site_settings` (`supabase/migrations/20260101000017_site_settings.sql`,
+one row, `id = 1`, seeded by the migration): school identity
+(name/short name/established year/school code/HSS code/UDISE code),
+contact (phone ×2/email/address fields/Google Maps link), and social
+links (Facebook/Instagram/YouTube) — deliberately **only** ordinary
+school-content fields; no Supabase/Cloudflare/API/infrastructure setting
+was added or will be, per the brief. Every column is free text/nullable:
+unset fields stay blank, nothing was fabricated (mirrors the existing
+"leave undefined rather than inventing values" rule already in
+`src/data/site.ts`). **RLS**: unconditional public `SELECT` (every
+column here is meant for public display — there is no privileged column
+to hide, unlike a draft content row) and `UPDATE` gated by
+`is_active_admin()` — **both roles** may edit Settings, since nothing
+stored here is more sensitive than ordinary public content (no
+`is_super_admin()` gate, unlike `profiles`). No insert/delete policy: the
+singleton row is fixed.
+
+**Public integration** (`src/lib/settings/public.ts`, `src/components/layout/Footer.tsx`,
+`src/app/contact/page.tsx`): `getPublicSiteInfo()` merges live settings
+over the existing static `src/data/site.ts` values field-by-field (a
+blank/unset setting quietly falls back to the static value, so the site
+never regresses from removing a field), and never throws (query failure
+→ same static fallback). `Footer` (rendered in the root layout, so on
+every page) and the Contact page now read from it instead of importing
+`site` directly for name/address/contact/founding-year; the Contact page
+additionally links its map block to `contact.googleMapsUrl` when set, and
+the Footer conditionally renders a small text link per social URL that is
+actually set (no icons — this version of `lucide-react` ships no brand
+icons, and no such row existed before, so plain text links avoid
+fabricating iconography). JSX/layout otherwise unchanged. `Header.tsx`,
+`src/lib/schema.ts`, `src/lib/metadata.ts`, and the static `metadata`
+export in `layout.tsx` were deliberately left untouched — out of this
+phase's stated public-integration examples (footer, contact information,
+school identity) and not required to make Settings functional.
+
+**Architectural consequence**: because `Footer` now reads Supabase and is
+mounted in the root layout, **every route in the app is now
+dynamically rendered** (`ƒ` in the build output, confirmed — previously-
+static pages like `/academics`, `/campus`, `/admissions`, `/student-life`
+joined the already-dynamic homepage/CMS pages from the prior phase). This
+is the direct, accepted consequence of "connect the footer to settings"
+and matches this codebase's established precedent (dynamic rendering
+deliberately relied upon so content changes appear without a redeploy) —
+not a redesign, not a regression, and it does not change what any page
+looks like.
+
+### Live security testing — Settings + Users (regression + new)
+
+9 of 9 tests passed — genuinely live, via Supabase MCP tools
+(`apply_migration`, since `execute_sql` remains read-only on this
+project — see §9's note), against the real `site_settings` singleton row
+(reverted to fully blank immediately after, verified) and the real
+existing `profiles` row:
+
+| Test | Result |
+|---|---|
+| Anonymous reads the `site_settings` row | **PASS** — 1 row visible |
+| Anonymous `UPDATE` on `site_settings` denied | **PASS** — 0 rows affected |
+| Anonymous `INSERT` a second `site_settings` row denied | **PASS** — RLS violation |
+| Authenticated active admin `UPDATE` on `site_settings` permitted | **PASS** — value verified written, then reverted to `null` |
+| Regression: anonymous `SELECT` on `news` (unchanged policy) still works | **PASS** — 0 rows (table is empty) |
+| Regression: anonymous `SELECT` on `gallery_albums` (unchanged policy) still works | **PASS** — 0 rows |
+| Regression: anonymous `SELECT` on `profiles` still denied (unchanged policy) | **PASS** — 0 rows |
+| Regression: super_admin still reads their own `profiles` row | **PASS** |
+
+`mcp__Supabase__get_advisors` (security) re-run after cleanup: identical
+two pre-existing `WARN` findings as before this phase (RPC-callable
+authorization helpers, leaked-password protection) — nothing new from
+`site_settings` or its policies.
+
+**Not live-tested (code-level verified only)**: the Users lockout guard
+(`isLastActiveSuperAdmin()`) itself, because exercising it end-to-end
+means invoking the actual Next.js server action, which this sandbox
+cannot do (§7 — network egress to the deployed/local app is blocked, and
+there is no second real Auth user in this project to safely create one
+for a live "demote the second super_admin" test without touching Supabase
+Auth directly). What *was* verified live: the exact SQL the guard runs
+(`select count(*) from profiles where role='super_admin' and
+is_active=true`) currently and correctly returns `1` against the real
+data (confirmed via `execute_sql`), i.e. the counting logic the guard
+depends on is sound against real state. The guard's control flow
+(re-count immediately before every write, block if the target is the
+only match) was verified by code review, and by TypeScript/build success
+requiring every branch to type-check. A true end-to-end test (attempt to
+demote/deactivate the sole super_admin through the actual UI/action and
+confirm the block) still requires deployed browser verification, same
+limitation as every other admin flow in this project.
+
 ## What was NOT done (by design)
 
 - No content was migrated from `src/data/*.ts` into Supabase beyond the
-  seven modules now built (Management & Leadership, News, Events,
-  Achievements, Notices, Downloads, Gallery) — all read live from
-  Supabase by design.
-- No user-management UI was built (the authorization foundation —
-  `profiles`, roles, `is_active`, RLS — is in place; the UI is a future
-  phase, along with Settings).
+  seven CMS modules (Management & Leadership, News, Events, Achievements,
+  Notices, Downloads, Gallery) plus the new Settings fields — all read
+  live from Supabase by design; unset Settings fields fall back to the
+  static file, never fabricated.
+- No Supabase Auth user creation/invitation was implemented (needs a
+  privileged Admin API credential — see §10's "Deferred" note and §11
+  below for the architecture recommendation).
 - No public per-album Gallery detail route, Student Life CMS, online
-  admissions, student/parent portal, alumni, payments, or results/exam
-  management — all explicitly out of scope for this phase.
+  admissions, student/parent portal, alumni, payments, results/exam
+  management, or attendance — all explicitly out of scope.
+
+## 11. If privileged Auth user provisioning is wanted later
+
+Not implemented this phase, per explicit instruction to stop and report
+rather than silently add a credential. Recommended architecture, for a
+future phase, if approved:
+
+- Add `SUPABASE_SERVICE_ROLE_KEY` as a Cloudflare secret (never a
+  `NEXT_PUBLIC_*` variable, never logged, never returned to the client).
+- The existing `src/lib/supabase/admin.ts` (`createAdminClient()`) is
+  already the correct, guarded shape for this — `import "server-only"`,
+  reads `process.env.SUPABASE_SERVICE_ROLE_KEY` directly, and its own
+  comment already documents "not used by any request-serving route" as
+  the current, intended state.
+- A new `createAdminUser()` server action would: `requireSuperAdmin()`
+  first (defense in depth even though the client is privileged), call
+  `supabase.auth.admin.inviteUserByEmail()` (never `createUser` with a
+  password the server chooses — an emailed invite avoids the server ever
+  handling a credential), then insert the corresponding `profiles` row
+  with the chosen role — all inside one server action, never exposing the
+  service-role key or the Admin API to the browser.
+- This would be the **only** request-serving code path permitted to
+  import `src/lib/supabase/admin.ts`; every other Users operation
+  (edit/role/active-status, all implemented this phase) should keep using
+  the ordinary RLS-enforced client, since RLS is the real boundary for
+  those and adding the admin client there would only weaken auditability
+  for no benefit.
+- Needs its own live security testing (invite flow, RLS still the
+  boundary for everything except the literal `auth.users` row creation)
+  before being considered complete.
+
+This is a recommendation only — implementing it requires explicit
+approval and, in whatever environment runs this app in production,
+configuring the new secret.

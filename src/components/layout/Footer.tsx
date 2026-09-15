@@ -1,13 +1,15 @@
 import Link from "next/link";
-import { MapPin, Mail, Phone } from "lucide-react";
+import { MapPin, Mail, Phone, ExternalLink } from "lucide-react";
 import { site } from "@/data/site";
 import { footerExploreLinks, footerResourceLinks } from "@/data/navigation";
 import { Logo } from "@/components/ui/Logo";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
+import { getPublicSiteInfo } from "@/lib/settings/public";
 
-export function Footer() {
+export async function Footer() {
   const year = new Date().getFullYear();
+  const info = await getPublicSiteInfo();
 
   return (
     <footer className="relative overflow-hidden border-t-[3px] border-gold bg-navy text-white/90">
@@ -15,7 +17,7 @@ export function Footer() {
         aria-hidden
         className="font-heading pointer-events-none absolute -top-10 right-0 text-[11rem] leading-none font-bold text-white/[0.06] select-none sm:text-[15rem]"
       >
-        {site.foundingYear}
+        {info.foundingYear}
       </span>
 
       <Reveal
@@ -27,19 +29,19 @@ export function Footer() {
         <div>
           <Link href="/" className="flex items-center gap-3">
             <Logo size={52} className="bg-white p-1" />
-            <span className="font-heading text-lg font-bold text-white">{site.shortName}</span>
+            <span className="font-heading text-lg font-bold text-white">{info.shortName}</span>
           </Link>
           <p className="mt-5 text-sm leading-relaxed text-white/65">
-            {site.name}
+            {info.name}
             <br />
-            {site.address.locality}
+            {info.address.locality}
             <br />
-            {site.address.region}, {site.address.state}
+            {info.address.region}, {info.address.state}
             <br />
-            {site.address.country}
+            {info.address.country}
           </p>
           <p className="mt-5 text-xs tracking-[0.2em] text-gold uppercase">
-            Est. {site.foundingYear}
+            Est. {info.foundingYear}
           </p>
         </div>
 
@@ -75,18 +77,35 @@ export function Footer() {
             <li className="flex items-start gap-2.5">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" aria-hidden />
               <span>
-                {site.address.locality}, {site.address.region}, {site.address.state}
+                {info.address.locality}, {info.address.region}, {info.address.state}
               </span>
             </li>
             <li className="flex items-start gap-2.5">
               <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gold" aria-hidden />
-              <span>{site.contact.phone ?? "Phone to be published"}</span>
+              <span>{info.contact.phone ?? "Phone to be published"}</span>
             </li>
             <li className="flex items-start gap-2.5">
               <Mail className="mt-0.5 h-4 w-4 shrink-0 text-gold" aria-hidden />
-              <span>{site.contact.email ?? "Email to be published"}</span>
+              <span>{info.contact.email ?? "Email to be published"}</span>
             </li>
           </ul>
+          {info.socialLinks.length > 0 && (
+            <ul className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-xs">
+              {info.socialLinks.map((link) => (
+                <li key={link.platform}>
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-white/65 hover:text-white"
+                  >
+                    {link.platform}
+                    <ExternalLink className="h-3 w-3" aria-hidden />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </Container>
       </Reveal>
@@ -94,7 +113,7 @@ export function Footer() {
       <div className="relative border-t border-white/10">
         <Container className="flex flex-col items-center justify-between gap-3 py-6 text-xs text-white/50 sm:flex-row">
           <p>
-            © {year} {site.name}. All rights reserved.
+            © {year} {info.name}. All rights reserved.
           </p>
           <p>
             Website crafted by{" "}

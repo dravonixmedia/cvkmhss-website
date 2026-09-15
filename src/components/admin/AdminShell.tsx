@@ -18,7 +18,17 @@ const contentNav: NavLeaf[] = [
   { label: "Gallery", href: "/admin/gallery" },
 ];
 
-const administrationNav: NavLeaf[] = [{ label: "Users" }, { label: "Settings" }];
+function getAdministrationNav(role: ProfileRow["role"]): NavLeaf[] {
+  const items: NavLeaf[] = [];
+  // Hiding the link for an editor is a UX courtesy only — /admin/users and
+  // its server actions independently enforce requireSuperAdmin(), which is
+  // the real authorization boundary (see src/lib/auth/session.ts).
+  if (role === "super_admin") {
+    items.push({ label: "Users", href: "/admin/users" });
+  }
+  items.push({ label: "Settings", href: "/admin/settings" });
+  return items;
+}
 
 function NavGroup({ heading, items }: { heading: string; items: NavLeaf[] }) {
   return (
@@ -96,7 +106,7 @@ export function AdminShell({
             Dashboard
           </Link>
           <NavGroup heading="Content" items={contentNav} />
-          <NavGroup heading="Administration" items={administrationNav} />
+          <NavGroup heading="Administration" items={getAdministrationNav(profile.role)} />
         </nav>
 
         <main className="min-w-0 flex-1 px-4 py-8 sm:px-8">{children}</main>
