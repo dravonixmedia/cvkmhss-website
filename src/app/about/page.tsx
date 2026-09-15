@@ -90,7 +90,7 @@ export default async function AboutPage() {
       <section className="py-16 sm:py-20">
         <Container className="max-w-3xl">
           <Reveal variant="fadeUp">
-            <SectionHeading eyebrow="Identity" title="Vision, Mission & Leadership" />
+            <SectionHeading eyebrow="Identity" title="Vision, Mission & Values" />
           </Reveal>
           <div className="mt-10 grid gap-x-10 gap-y-10 border-t border-border pt-10 sm:grid-cols-2">
             {[
