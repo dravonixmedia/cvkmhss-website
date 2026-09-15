@@ -34,6 +34,11 @@ export function GalleryImageUploadForm({
         disabled={pending}
         className="mt-2 block w-full text-sm text-charcoal file:mr-4 file:border file:border-border file:bg-off-white file:px-3 file:py-2 file:text-xs file:font-semibold file:tracking-wide file:text-navy file:uppercase"
       />
+      <p className="mt-2 text-xs leading-relaxed text-slate">
+        <span className="font-medium text-charcoal">Recommended: 1600 px or larger on the longer side</span>
+        <br />
+        JPG or WebP • Photos of any orientation are welcome — portrait and landscape both display well.
+      </p>
 
       {state.error && (
         <p role="alert" className="mt-3 text-sm font-medium text-red-700">

@@ -140,6 +140,12 @@ export function NewsForm({
         }
         disabled={pending}
         existingImageUrl={initialValues?.imageUrl}
+        previewContainerClassName="relative mt-2 aspect-[16/9] w-full max-w-sm overflow-hidden border border-border"
+        recommendation={{
+          dimensions: "1600 × 1000 px",
+          orientation: "landscape, 8:5",
+          tip: "Keep important subjects and text away from the edges.",
+        }}
         helpText={initialValues?.imageUrl && "Choose a new file only to replace the current image."}
       />
 

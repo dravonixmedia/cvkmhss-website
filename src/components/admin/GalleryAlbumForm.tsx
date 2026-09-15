@@ -132,6 +132,12 @@ export function GalleryAlbumForm({
         }
         disabled={pending}
         existingImageUrl={initialValues?.coverImageUrl}
+        previewContainerClassName="relative mt-2 aspect-[4/3] w-48 overflow-hidden border border-border"
+        recommendation={{
+          dimensions: "1600 × 1200 px",
+          orientation: "landscape, 4:3",
+          tip: "This becomes the album's cover photo.",
+        }}
         helpText={
           initialValues?.coverImageUrl
             ? "Choose a new file only to replace the current cover, or pick one from the album's photos after saving."

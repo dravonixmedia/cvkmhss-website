@@ -51,7 +51,7 @@ export default async function NewsPage() {
                         alt={featured.title}
                         fill
                         sizes="(min-width: 1024px) 55vw, 100vw"
-                        className="object-cover"
+                        className="object-cover object-center"
                         priority
                       />
                     ) : (

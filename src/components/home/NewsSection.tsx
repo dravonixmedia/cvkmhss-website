@@ -48,7 +48,7 @@ export async function NewsSection() {
                         alt={featured.title}
                         fill
                         sizes="(min-width: 1024px) 45vw, 100vw"
-                        className="object-cover"
+                        className="object-cover object-center"
                       />
                     ) : (
                       <PhotoPlaceholder

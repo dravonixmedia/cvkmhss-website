@@ -78,7 +78,7 @@ export default async function NewsArticlePage({ params }: PageProps<"/news/[slug
                 alt={article.title}
                 fill
                 sizes="(min-width: 1024px) 768px, 100vw"
-                className="object-cover"
+                className="object-cover object-center"
                 priority
               />
             </Reveal>

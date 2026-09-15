@@ -87,7 +87,12 @@ export function ManagementForm({
         }
         disabled={pending}
         existingImageUrl={initialValues?.photoUrl}
-        imageClassName="mt-2 h-24 w-24 border border-border object-cover"
+        previewContainerClassName="relative mt-2 aspect-[4/5] w-32 overflow-hidden border border-border"
+        recommendation={{
+          dimensions: "1000 × 1250 px",
+          orientation: "portrait, 4:5",
+          tip: "Center the face in the frame.",
+        }}
         helpText={initialValues?.photoUrl && "Choose a new file only to replace the current photo."}
       />
 
