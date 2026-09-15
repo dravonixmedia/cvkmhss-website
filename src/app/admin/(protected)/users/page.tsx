@@ -25,7 +25,7 @@ export default async function AdminUsersListPage() {
         <div>
           <h1 className="font-heading text-2xl font-semibold text-navy">Users</h1>
           <p className="mt-1 text-sm text-slate">
-            Administrators who can sign in to this backend. Super Admin only.
+            Manage administrators who can access the school website backend.
           </p>
         </div>
       </div>
@@ -57,7 +57,9 @@ export default async function AdminUsersListPage() {
                         <span className="ml-2 text-xs font-normal text-slate">(you)</span>
                       )}
                     </p>
-                    <p className="text-xs text-slate">{isSelf ? email : "—"}</p>
+                    <p className="text-xs text-slate">
+                      {isSelf ? email : "Email unavailable"}
+                    </p>
                   </td>
                   <td className="px-4 py-3">
                     <span
@@ -111,22 +113,15 @@ export default async function AdminUsersListPage() {
         </table>
       </div>
 
-      <p className="mt-3 text-xs text-slate">
-        Other administrators&apos; email addresses aren&apos;t stored in this app and require
-        Supabase Auth Admin access to display — see the note below.
-      </p>
-
       <div className="mt-10 border border-dashed border-border bg-off-white p-6">
-        <h2 className="font-heading text-sm font-semibold text-navy">Add an administrator</h2>
+        <h2 className="font-heading text-sm font-semibold text-navy">Add an Administrator</h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate">
-          Creating a new sign-in requires Supabase&apos;s Auth Admin API, which needs a privileged
-          server credential this deployment does not currently use for request-serving code (by
-          design — see <code className="text-xs">docs/SUPABASE_SETUP.md</code>). To add an
-          administrator today: create the Auth user in the Supabase Dashboard
-          (Authentication → Users → Add user), then insert their <code className="text-xs">profiles</code>{" "}
-          row via the SQL Editor. Full steps are in{" "}
-          <code className="text-xs">docs/SUPABASE_SETUP.md</code> §5. Once created, manage their
-          role and active status here.
+          New administrator accounts are securely provisioned by Dravonix Media. To add a new
+          administrator, please contact the Dravonix support team. Once the account is created,
+          Super Admins can manage the user&apos;s role and access status here.
+        </p>
+        <p className="mt-3 max-w-2xl text-xs text-slate">
+          Administrator access should only be provided to authorised school staff.
         </p>
       </div>
     </div>
