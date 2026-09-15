@@ -41,7 +41,7 @@ export async function NewsSection() {
             <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
               <Reveal variant="fadeUp">
                 <Link href={`/news/${featured.slug}`} className="group block">
-                  <div className="relative h-64 sm:h-80">
+                  <div className="relative aspect-[8/5] w-full overflow-hidden">
                     {featured.featuredImage ? (
                       <Image
                         src={featured.featuredImage}

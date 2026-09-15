@@ -140,7 +140,7 @@ export function NewsForm({
         }
         disabled={pending}
         existingImageUrl={initialValues?.imageUrl}
-        previewContainerClassName="relative mt-2 aspect-[16/9] w-full max-w-sm overflow-hidden border border-border"
+        previewContainerClassName="relative mt-2 aspect-[8/5] w-full max-w-sm overflow-hidden border border-border"
         recommendation={{
           dimensions: "1600 × 1000 px",
           orientation: "landscape, 8:5",

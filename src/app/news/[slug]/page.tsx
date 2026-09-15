@@ -72,7 +72,7 @@ export default async function NewsArticlePage({ params }: PageProps<"/news/[slug
           </Reveal>
 
           {article.featuredImage && (
-            <Reveal variant="fadeUp" delay={60} as="div" className="relative mt-8 aspect-[16/9] w-full overflow-hidden">
+            <Reveal variant="fadeUp" delay={60} as="div" className="relative mt-8 aspect-[8/5] w-full overflow-hidden">
               <Image
                 src={article.featuredImage}
                 alt={article.title}
