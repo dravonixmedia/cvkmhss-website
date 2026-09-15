@@ -326,6 +326,69 @@ export type Database = {
           },
         ]
       }
+      management_members: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          designation: string
+          display_order: number
+          full_name: string
+          id: string
+          is_featured: boolean
+          photo_path: string | null
+          published_at: string | null
+          short_bio: string | null
+          status: Database["public"]["Enums"]["content_status"]
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          designation: string
+          display_order?: number
+          full_name: string
+          id?: string
+          is_featured?: boolean
+          photo_path?: string | null
+          published_at?: string | null
+          short_bio?: string | null
+          status?: Database["public"]["Enums"]["content_status"]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          designation?: string
+          display_order?: number
+          full_name?: string
+          id?: string
+          is_featured?: boolean
+          photo_path?: string | null
+          published_at?: string | null
+          short_bio?: string | null
+          status?: Database["public"]["Enums"]["content_status"]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "management_members_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "management_members_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       news: {
         Row: {
           author: string | null
@@ -700,3 +763,4 @@ export const Constants = {
 // ---------------------------------------------------------------------
 
 export type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"]
+export type ManagementMemberRow = Database["public"]["Tables"]["management_members"]["Row"]

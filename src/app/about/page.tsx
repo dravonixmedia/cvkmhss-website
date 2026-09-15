@@ -6,12 +6,15 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Faq } from "@/components/ui/Faq";
 import { Reveal } from "@/components/motion/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { webPageSchema } from "@/lib/schema";
+import { ManagementSection } from "@/components/about/ManagementSection";
+import { webPageSchema, personSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/metadata";
 import { legacyTimeline, positioningPillars, site } from "@/data/site";
 import { faqCategories } from "@/data/faq";
 import { pageHeroes } from "@/data/pageHeroes";
 import { staggerDelay } from "@/lib/stagger";
+import { getPublishedManagementMembers } from "@/lib/management/queries";
+import { signManagementPhotoUrls } from "@/lib/management/storage";
 
 const schoolFaq = faqCategories.filter((category) => category.id === "school");
 
@@ -26,7 +29,14 @@ const breadcrumb = [
   { label: "About", href: "/about" },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const managementMembers = await getPublishedManagementMembers();
+  const photoUrls = await signManagementPhotoUrls(managementMembers.map((m) => m.photo_path));
+  const managementDisplay = managementMembers.map((member, index) => ({
+    member,
+    photoUrl: photoUrls[index],
+  }));
+
   return (
     <>
       <LandingHero hero={pageHeroes.about} breadcrumb={breadcrumb} />
@@ -98,11 +108,6 @@ export default function AboutPage() {
                 title: "Core values pending confirmation",
                 description: "The school's core institutional values will be published here once confirmed.",
               },
-              {
-                title: "Leadership details pending",
-                description:
-                  "Names and details of the school's management and leadership will be published here once confirmed.",
-              },
             ].map((item, index) => (
               <Reveal key={item.title} variant="fadeUp" delay={staggerDelay(index, 70)}>
                 <EmptyState title={item.title} description={item.description} />
@@ -111,6 +116,8 @@ export default function AboutPage() {
           </div>
         </Container>
       </section>
+
+      <ManagementSection members={managementDisplay} />
 
       <section className="border-t border-border bg-paper py-16 sm:py-20">
         <Container className="max-w-3xl">
@@ -123,7 +130,12 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      <JsonLd data={webPageSchema({ title, description, path: "/about" })} />
+      <JsonLd
+        data={[
+          webPageSchema({ title, description, path: "/about" }),
+          ...managementMembers.map((member) => personSchema(member)),
+        ]}
+      />
     </>
   );
 }

@@ -9,6 +9,7 @@ interface NavLeaf {
 }
 
 const contentNav: NavLeaf[] = [
+  { label: "Management & Leadership", href: "/admin/management" },
   { label: "News" },
   { label: "Events" },
   { label: "Achievements" },
@@ -26,16 +27,27 @@ function NavGroup({ heading, items }: { heading: string; items: NavLeaf[] }) {
         {heading}
       </p>
       <ul className="mt-2 space-y-0.5">
-        {items.map((item) => (
-          <li key={item.label}>
-            <span className="flex items-center justify-between px-3 py-2 text-sm text-slate/70">
-              {item.label}
-              <span className="rounded-sm border border-border px-1.5 py-0.5 text-[10px] font-medium tracking-wide text-slate uppercase">
-                Soon
+        {items.map((item) =>
+          item.href ? (
+            <li key={item.label}>
+              <Link
+                href={item.href}
+                className="block px-3 py-2 text-sm font-medium text-navy hover:bg-off-white"
+              >
+                {item.label}
+              </Link>
+            </li>
+          ) : (
+            <li key={item.label}>
+              <span className="flex items-center justify-between px-3 py-2 text-sm text-slate/70">
+                {item.label}
+                <span className="rounded-sm border border-border px-1.5 py-0.5 text-[10px] font-medium tracking-wide text-slate uppercase">
+                  Soon
+                </span>
               </span>
-            </span>
-          </li>
-        ))}
+            </li>
+          )
+        )}
       </ul>
     </div>
   );

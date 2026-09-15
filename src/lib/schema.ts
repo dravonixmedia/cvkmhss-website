@@ -101,6 +101,22 @@ export function newsArticleSchema(article: NewsArticle) {
   };
 }
 
+/**
+ * Person JSON-LD for a published Management & Leadership member. Only
+ * ever called with real, published Supabase data — never fabricated
+ * facts (see src/app/about/page.tsx).
+ */
+export function personSchema(member: { full_name: string; designation: string; short_bio?: string | null }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: member.full_name,
+    jobTitle: member.designation,
+    worksFor: { "@type": "Organization", name: site.name },
+    ...(member.short_bio ? { description: member.short_bio } : {}),
+  };
+}
+
 export function eventSchema(event: EventItem) {
   return {
     "@context": "https://schema.org",
