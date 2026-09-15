@@ -55,6 +55,14 @@ export async function deleteCmsFiles(bucket: string, paths: (string | null)[]): 
  * signing itself is subject to the same storage.objects RLS as any other
  * read, so the caller only ever gets a URL for objects it could already
  * read.
+ *
+ * A signing failure degrades to `null` (the caller falls back to the
+ * placeholder artwork) rather than throwing — one broken image must never
+ * take down an entire listing page. That failure is never silent on the
+ * server, though: every branch that returns `null` because something went
+ * wrong (as opposed to there being no path to sign at all) is logged with
+ * enough detail to diagnose from server-side logs, without ever putting a
+ * Storage path or the raw Supabase error in anything sent to a client.
  */
 export async function signCmsFileUrl(
   bucket: string,
@@ -62,10 +70,20 @@ export async function signCmsFileUrl(
   expiresIn = 3600
 ): Promise<string | null> {
   if (!path) return null;
-  const supabase = await createClient();
-  const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, expiresIn);
-  if (error || !data) return null;
-  return data.signedUrl;
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, expiresIn);
+    if (error || !data) {
+      console.error(
+        `signCmsFileUrl: failed to sign object in bucket "${bucket}": ${error?.message ?? "no data returned"}`
+      );
+      return null;
+    }
+    return data.signedUrl;
+  } catch (err) {
+    console.error(`signCmsFileUrl: unexpected error signing object in bucket "${bucket}":`, err);
+    return null;
+  }
 }
 
 export async function signCmsFileUrls(
