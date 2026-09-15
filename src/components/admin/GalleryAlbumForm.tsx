@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import type { GalleryAlbumFormState } from "@/lib/gallery/actions";
 import type { GalleryCategoryValue } from "@/lib/gallery/validation";
 import { fieldClasses, labelClasses } from "@/components/admin/formStyles";
+import { ImageFileField } from "@/components/admin/ImageFileField";
 import { galleryCategories } from "@/data/gallery";
 
 const initialState: GalleryAlbumFormState = {};
@@ -120,35 +121,23 @@ export function GalleryAlbumForm({
         />
       </div>
 
-      <div>
-        <label htmlFor="cover_image" className={labelClasses}>
-          Cover Image{" "}
-          <span className="text-slate normal-case">
-            (optional — JPEG, PNG or WEBP, up to 5MB)
-          </span>
-        </label>
-        {initialValues?.coverImageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element -- small admin-only preview thumbnail
-          <img
-            src={initialValues.coverImageUrl}
-            alt=""
-            className="mt-2 h-24 w-40 border border-border object-cover"
-          />
-        )}
-        <input
-          id="cover_image"
-          name="cover_image"
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          disabled={pending}
-          className="mt-2 block w-full text-sm text-charcoal file:mr-4 file:border file:border-border file:bg-paper file:px-3 file:py-2 file:text-xs file:font-semibold file:tracking-wide file:text-navy file:uppercase"
-        />
-        <p className="mt-1 text-xs text-slate">
-          {initialValues?.coverImageUrl
+      <ImageFileField
+        id="cover_image"
+        name="cover_image"
+        label={
+          <>
+            Cover Image{" "}
+            <span className="text-slate normal-case">(optional — JPEG, PNG or WEBP, up to 5MB)</span>
+          </>
+        }
+        disabled={pending}
+        existingImageUrl={initialValues?.coverImageUrl}
+        helpText={
+          initialValues?.coverImageUrl
             ? "Choose a new file only to replace the current cover, or pick one from the album's photos after saving."
-            : "You can also pick a cover from the album's photos after uploading them."}
-        </p>
-      </div>
+            : "You can also pick a cover from the album's photos after uploading them."
+        }
+      />
 
       {state.error && (
         <p role="alert" className="text-sm font-medium text-red-700">

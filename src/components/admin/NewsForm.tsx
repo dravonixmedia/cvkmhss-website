@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import type { NewsFormState } from "@/lib/news/actions";
 import { fieldClasses, labelClasses } from "@/components/admin/formStyles";
+import { ImageFileField } from "@/components/admin/ImageFileField";
 
 const initialState: NewsFormState = {};
 
@@ -129,30 +130,18 @@ export function NewsForm({
         />
       </div>
 
-      <div>
-        <label htmlFor="featured_image" className={labelClasses}>
-          Featured Image <span className="text-slate normal-case">(JPEG, PNG or WEBP, up to 5MB)</span>
-        </label>
-        {initialValues?.imageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element -- small admin-only preview thumbnail
-          <img
-            src={initialValues.imageUrl}
-            alt=""
-            className="mt-2 h-24 w-40 border border-border object-cover"
-          />
-        )}
-        <input
-          id="featured_image"
-          name="featured_image"
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          disabled={pending}
-          className="mt-2 block w-full text-sm text-charcoal file:mr-4 file:border file:border-border file:bg-paper file:px-3 file:py-2 file:text-xs file:font-semibold file:tracking-wide file:text-navy file:uppercase"
-        />
-        {initialValues?.imageUrl && (
-          <p className="mt-1 text-xs text-slate">Choose a new file only to replace the current image.</p>
-        )}
-      </div>
+      <ImageFileField
+        id="featured_image"
+        name="featured_image"
+        label={
+          <>
+            Featured Image <span className="text-slate normal-case">(JPEG, PNG or WEBP, up to 5MB)</span>
+          </>
+        }
+        disabled={pending}
+        existingImageUrl={initialValues?.imageUrl}
+        helpText={initialValues?.imageUrl && "Choose a new file only to replace the current image."}
+      />
 
       {state.error && (
         <p role="alert" className="text-sm font-medium text-red-700">

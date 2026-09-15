@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { LandingHero } from "@/components/hero/LandingHero";
 import { Container } from "@/components/ui/Container";
 import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
@@ -51,14 +52,31 @@ export default async function GalleryPage() {
           ) : (
             <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
               {galleryAlbums.map((album, index) => (
-                <div key={album.slug} className="relative aspect-[4/3]">
-                  <PhotoPlaceholder
-                    caption={album.title}
-                    tone="navy"
-                    hoverScale
-                    delay={staggerDelay(index, 55)}
-                    className="absolute inset-0"
-                  />
+                <div key={album.slug} className="group relative aspect-[4/3] overflow-hidden">
+                  {album.cover ? (
+                    <>
+                      <Image
+                        src={album.cover}
+                        alt={album.title}
+                        fill
+                        sizes="(min-width: 1024px) 25vw, 50vw"
+                        className="object-cover transition-transform duration-500 ease-out [@media(hover:hover)]:group-hover:scale-[1.025]"
+                      />
+                      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy/80 to-transparent p-4">
+                        <span className="block truncate text-[11px] font-semibold tracking-[0.16em] text-gold-light/90 uppercase">
+                          {album.title}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <PhotoPlaceholder
+                      caption={album.title}
+                      tone="navy"
+                      hoverScale
+                      delay={staggerDelay(index, 55)}
+                      className="absolute inset-0"
+                    />
+                  )}
                 </div>
               ))}
             </div>

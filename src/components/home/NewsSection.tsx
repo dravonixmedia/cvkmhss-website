@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
@@ -41,12 +42,22 @@ export async function NewsSection() {
               <Reveal variant="fadeUp">
                 <Link href={`/news/${featured.slug}`} className="group block">
                   <div className="relative h-64 sm:h-80">
-                    <PhotoPlaceholder
-                      caption={featured.title}
-                      tone="navy"
-                      focal="bottom-left"
-                      className="absolute inset-0"
-                    />
+                    {featured.featuredImage ? (
+                      <Image
+                        src={featured.featuredImage}
+                        alt={featured.title}
+                        fill
+                        sizes="(min-width: 1024px) 45vw, 100vw"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <PhotoPlaceholder
+                        caption={featured.title}
+                        tone="navy"
+                        focal="bottom-left"
+                        className="absolute inset-0"
+                      />
+                    )}
                   </div>
                   <p className="mt-5 text-xs font-semibold tracking-[0.14em] text-gold uppercase">
                     {featured.category}

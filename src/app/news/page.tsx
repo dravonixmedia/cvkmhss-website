@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { LandingHero } from "@/components/hero/LandingHero";
 import { Container } from "@/components/ui/Container";
@@ -44,12 +45,23 @@ export default async function NewsPage() {
               <Reveal variant="fadeUp">
                 <Link href={`/news/${featured.slug}`} className="group grid gap-8 lg:grid-cols-[1.3fr_1fr]">
                   <div className="relative h-64 sm:h-96">
-                    <PhotoPlaceholder
-                      caption={featured.title}
-                      tone="navy"
-                      focal="bottom-left"
-                      className="absolute inset-0"
-                    />
+                    {featured.featuredImage ? (
+                      <Image
+                        src={featured.featuredImage}
+                        alt={featured.title}
+                        fill
+                        sizes="(min-width: 1024px) 55vw, 100vw"
+                        className="object-cover"
+                        priority
+                      />
+                    ) : (
+                      <PhotoPlaceholder
+                        caption={featured.title}
+                        tone="navy"
+                        focal="bottom-left"
+                        className="absolute inset-0"
+                      />
+                    )}
                   </div>
                   <div className="flex flex-col justify-center">
                     <p className="text-xs font-semibold tracking-[0.14em] text-gold uppercase">

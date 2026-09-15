@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import type { ManagementFormState } from "@/lib/management/actions";
 import { fieldClasses, labelClasses } from "@/components/admin/formStyles";
+import { ImageFileField } from "@/components/admin/ImageFileField";
 
 export interface ManagementFormInitialValues {
   fullName: string;
@@ -76,30 +77,19 @@ export function ManagementForm({
         />
       </div>
 
-      <div>
-        <label htmlFor="photo" className={labelClasses}>
-          Photo <span className="text-slate normal-case">(JPEG, PNG or WEBP, up to 5MB)</span>
-        </label>
-        {initialValues?.photoUrl && (
-          // eslint-disable-next-line @next/next/no-img-element -- small admin-only preview thumbnail, not the public-facing image
-          <img
-            src={initialValues.photoUrl}
-            alt=""
-            className="mt-2 h-24 w-24 border border-border object-cover"
-          />
-        )}
-        <input
-          id="photo"
-          name="photo"
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          disabled={pending}
-          className="mt-2 block w-full text-sm text-charcoal file:mr-4 file:border file:border-border file:bg-paper file:px-3 file:py-2 file:text-xs file:font-semibold file:tracking-wide file:text-navy file:uppercase"
-        />
-        {initialValues?.photoUrl && (
-          <p className="mt-1 text-xs text-slate">Choose a new file only to replace the current photo.</p>
-        )}
-      </div>
+      <ImageFileField
+        id="photo"
+        name="photo"
+        label={
+          <>
+            Photo <span className="text-slate normal-case">(JPEG, PNG or WEBP, up to 5MB)</span>
+          </>
+        }
+        disabled={pending}
+        existingImageUrl={initialValues?.photoUrl}
+        imageClassName="mt-2 h-24 w-24 border border-border object-cover"
+        helpText={initialValues?.photoUrl && "Choose a new file only to replace the current photo."}
+      />
 
       <div className="flex items-end gap-6">
         <div>

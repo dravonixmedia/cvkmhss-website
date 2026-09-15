@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
@@ -69,6 +70,19 @@ export default async function NewsArticlePage({ params }: PageProps<"/news/[slug
               </div>
             </header>
           </Reveal>
+
+          {article.featuredImage && (
+            <Reveal variant="fadeUp" delay={60} as="div" className="relative mt-8 aspect-[16/9] w-full overflow-hidden">
+              <Image
+                src={article.featuredImage}
+                alt={article.title}
+                fill
+                sizes="(min-width: 1024px) 768px, 100vw"
+                className="object-cover"
+                priority
+              />
+            </Reveal>
+          )}
 
           <Reveal variant="fadeUp" delay={100} as="div" className="prose prose-slate mt-10 max-w-none">
             {article.body.map((paragraph, index) => (
