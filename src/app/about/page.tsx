@@ -15,6 +15,7 @@ import { pageHeroes } from "@/data/pageHeroes";
 import { staggerDelay } from "@/lib/stagger";
 import { getPublishedManagementMembers } from "@/lib/management/queries";
 import { signManagementPhotoUrls } from "@/lib/management/storage";
+import { getSiteImage } from "@/lib/site-images/public";
 
 const schoolFaq = faqCategories.filter((category) => category.id === "school");
 
@@ -36,10 +37,16 @@ export default async function AboutPage() {
     member,
     photoUrl: photoUrls[index],
   }));
+  const heroImage = await getSiteImage("about_hero");
 
   return (
     <>
-      <LandingHero hero={pageHeroes.about} breadcrumb={breadcrumb} />
+      <LandingHero
+        hero={pageHeroes.about}
+        breadcrumb={breadcrumb}
+        imageUrl={heroImage?.url}
+        imageAlt={heroImage?.alt}
+      />
 
       <section className="py-16 sm:py-20">
         <Container className="max-w-3xl">

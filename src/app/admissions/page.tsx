@@ -13,6 +13,7 @@ import { academicStages } from "@/data/academics";
 import { faqCategories } from "@/data/faq";
 import { pageHeroes } from "@/data/pageHeroes";
 import { staggerDelay } from "@/lib/stagger";
+import { getSiteImage } from "@/lib/site-images/public";
 
 const title = "Admissions";
 const description =
@@ -27,12 +28,18 @@ const breadcrumb = [
   { label: "Admissions", href: "/admissions" },
 ];
 
-export default function AdmissionsPage() {
+export default async function AdmissionsPage() {
   const higherSecondary = academicStages.find((stage) => stage.id === "higher-secondary");
+  const heroImage = await getSiteImage("admissions_hero");
 
   return (
     <>
-      <LandingHero hero={pageHeroes.admissions} breadcrumb={breadcrumb} />
+      <LandingHero
+        hero={pageHeroes.admissions}
+        breadcrumb={breadcrumb}
+        imageUrl={heroImage?.url}
+        imageAlt={heroImage?.alt}
+      />
 
       <section className="py-16 sm:py-20">
         <Container>

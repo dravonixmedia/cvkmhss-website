@@ -551,6 +551,44 @@ export type Database = {
         }
         Relationships: []
       }
+      site_images: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          id: string
+          image_path: string | null
+          slot_key: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          id?: string
+          image_path?: string | null
+          slot_key: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          id?: string
+          image_path?: string | null
+          slot_key?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_images_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_settings: {
         Row: {
           address_district: string | null
@@ -849,3 +887,4 @@ export type DownloadRow = Database["public"]["Tables"]["downloads"]["Row"]
 export type GalleryAlbumRow = Database["public"]["Tables"]["gallery_albums"]["Row"]
 export type GalleryImageRow = Database["public"]["Tables"]["gallery_images"]["Row"]
 export type SiteSettingsRow = Database["public"]["Tables"]["site_settings"]["Row"]
+export type SiteImageRow = Database["public"]["Tables"]["site_images"]["Row"]

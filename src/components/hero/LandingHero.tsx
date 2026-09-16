@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { BreadcrumbItem, PageHeroConfig } from "@/types";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
@@ -13,15 +14,26 @@ import { Reveal } from "@/components/motion/Reveal";
  * reveals in one consistent staggered sequence (breadcrumb → eyebrow → H1 →
  * description → CTA); the photo slot animates independently via its own
  * built-in imageReveal.
+ *
+ * `imageUrl`/`imageAlt` are optional and only ever passed by the pages
+ * connected to the Website Images admin module (About/Academics/Campus/
+ * Student Life/Admissions) — every other page (News, Events, Achievements,
+ * Gallery, Contact, all CMS-owned or otherwise out of that module's scope)
+ * omits them and keeps rendering PhotoPlaceholder exactly as before.
  */
 export function LandingHero({
   hero,
   breadcrumb,
+  imageUrl,
+  imageAlt,
 }: {
   hero: PageHeroConfig;
   breadcrumb: BreadcrumbItem[];
+  imageUrl?: string | null;
+  imageAlt?: string | null;
 }) {
   const { eyebrow, title, description, variant, imageCaption, ctas, heritageMark, short } = hero;
+  const resolvedAlt = imageAlt || imageCaption;
 
   const eyebrowLight = (
     <p className="text-xs font-semibold tracking-[0.28em] text-gold-light uppercase">{eyebrow}</p>
@@ -61,12 +73,23 @@ export function LandingHero({
 
     return (
       <section className={`relative flex items-end overflow-hidden ${heightClass}`}>
-        <PhotoPlaceholder
-          caption={imageCaption}
-          tone="navy"
-          focal={isLowerTitle ? "bottom-right" : "top-right"}
-          className="absolute inset-0"
-        />
+        {!isLowerTitle && imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={resolvedAlt}
+            fill
+            sizes="100vw"
+            className="object-cover object-center"
+            priority
+          />
+        ) : (
+          <PhotoPlaceholder
+            caption={imageCaption}
+            tone="navy"
+            focal={isLowerTitle ? "bottom-right" : "top-right"}
+            className="absolute inset-0"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-navy-dark/90 via-navy-dark/35 to-transparent" />
         <Container className="relative z-10 pt-24 pb-10 text-white sm:pb-14">
           <Reveal variant="fadeIn">
@@ -97,7 +120,18 @@ export function LandingHero({
     return (
       <section className="lg:grid lg:min-h-[62vh] lg:grid-cols-2">
         <div className="relative h-56 sm:h-72 lg:h-auto">
-          <PhotoPlaceholder caption={imageCaption} tone="navy" focal="bottom-left" className="absolute inset-0" />
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={resolvedAlt}
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover object-center"
+              priority
+            />
+          ) : (
+            <PhotoPlaceholder caption={imageCaption} tone="navy" focal="bottom-left" className="absolute inset-0" />
+          )}
         </div>
         <div className="flex flex-col justify-center px-4 py-12 sm:px-6 sm:py-16 lg:px-16 lg:py-0">
           <Reveal variant="fadeIn">
@@ -160,7 +194,18 @@ export function LandingHero({
             {renderCtaRow("light")}
           </div>
           <div className="relative h-64 sm:h-80 lg:h-[28rem] lg:translate-y-10">
-            <PhotoPlaceholder caption={imageCaption} tone="navy" focal="bottom-left" className="absolute inset-0" />
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={resolvedAlt}
+                fill
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                className="object-cover object-center"
+                priority
+              />
+            ) : (
+              <PhotoPlaceholder caption={imageCaption} tone="navy" focal="bottom-left" className="absolute inset-0" />
+            )}
           </div>
         </Container>
       </section>
@@ -211,7 +256,18 @@ export function LandingHero({
         </Reveal>
         <div className="mt-8 grid gap-3 sm:gap-4 lg:grid-cols-[1.4fr_1fr]">
           <div className="relative h-64 sm:h-80 lg:h-[28rem]">
-            <PhotoPlaceholder caption={imageCaption} tone="navy" focal="center" className="absolute inset-0" />
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={resolvedAlt}
+                fill
+                sizes="(min-width: 1024px) 58vw, 100vw"
+                className="object-cover object-center"
+                priority
+              />
+            ) : (
+              <PhotoPlaceholder caption={imageCaption} tone="navy" focal="center" className="absolute inset-0" />
+            )}
           </div>
           <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-1 lg:grid-rows-2">
             <div className="relative h-32 sm:h-40 lg:h-auto">

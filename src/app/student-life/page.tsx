@@ -10,6 +10,7 @@ import { buildMetadata } from "@/lib/metadata";
 import { studentActivities } from "@/data/student-life";
 import { pageHeroes } from "@/data/pageHeroes";
 import { staggerDelay } from "@/lib/stagger";
+import { getSiteImage } from "@/lib/site-images/public";
 
 const title = "Student Life";
 const description =
@@ -22,10 +23,17 @@ const breadcrumb = [
   { label: "Student Life", href: "/student-life" },
 ];
 
-export default function StudentLifePage() {
+export default async function StudentLifePage() {
+  const heroImage = await getSiteImage("student_life_hero");
+
   return (
     <>
-      <LandingHero hero={pageHeroes["student-life"]} breadcrumb={breadcrumb} />
+      <LandingHero
+        hero={pageHeroes["student-life"]}
+        breadcrumb={breadcrumb}
+        imageUrl={heroImage?.url}
+        imageAlt={heroImage?.alt}
+      />
 
       <section className="py-16 sm:py-20">
         <Container>

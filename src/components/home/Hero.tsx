@@ -1,18 +1,29 @@
+import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { Reveal } from "@/components/motion/Reveal";
 import { site } from "@/data/site";
+import { getSiteImage } from "@/lib/site-images/public";
 
-export function Hero() {
+export async function Hero() {
+  const heroImage = await getSiteImage("home_hero");
+  const caption = `${site.name} campus, East Kallada`;
+
   return (
     <section className="relative flex min-h-[82vh] items-end overflow-hidden sm:min-h-[78vh] lg:min-h-[92vh]">
-      <PhotoPlaceholder
-        caption={`${site.name} campus, East Kallada`}
-        tone="navy"
-        focal="top-right"
-        className="absolute inset-0"
-      />
+      {heroImage ? (
+        <Image
+          src={heroImage.url}
+          alt={heroImage.alt || caption}
+          fill
+          sizes="100vw"
+          className="object-cover object-center"
+          priority
+        />
+      ) : (
+        <PhotoPlaceholder caption={caption} tone="navy" focal="top-right" className="absolute inset-0" />
+      )}
       <div className="absolute inset-0 bg-gradient-to-t from-navy-dark/95 via-navy-dark/45 to-navy-dark/10" />
 
       <Container className="relative w-full pt-28 pb-14 text-white sm:pb-16 lg:pb-20">

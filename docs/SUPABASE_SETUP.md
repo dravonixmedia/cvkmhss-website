@@ -726,3 +726,139 @@ future phase, if approved:
 This is a recommendation only — implementing it requires explicit
 approval and, in whatever environment runs this app in production,
 configuring the new secret.
+
+## 12. Website Images (static-page photography slots)
+
+A small, separate system for the fixed, non-CMS `PhotoPlaceholder`
+positions on otherwise-static pages (Home, About, Academics, Campus &
+Facilities, Student Life, Admissions) — distinct from every content CMS
+domain's own images (News/Events/Achievements/Gallery/Management &
+Leadership), which this phase did not touch.
+
+**Audit** (full inventory — every `PhotoPlaceholder` usage in `src/`,
+categorized): 8 single, named, non-repeating positions were turned into
+slots; several other placeholders were found and deliberately left alone:
+
+- Per-item, data-driven grids: the Campus page's facilities grid
+  (`src/app/campus/page.tsx`, one tile per facility), the Student Life
+  page's "In Action" 4-tile grid (`src/app/student-life/page.tsx`) — not
+  single predefined positions, and admins must not be able to invent new
+  slot keys, so these were left as-is.
+- `LandingHero`'s `collage` variant's two small hardcoded side tiles
+  ("Student life" / "School activities") — generic decorative filler
+  baked into the variant itself, shared by both Student Life's and
+  Gallery's hero, not a clean per-page slot.
+- The `lowerTitle` (News, Contact) and `overlay` (Events) `LandingHero`
+  variants, and `GallerySection.tsx`'s homepage tiles — all belong to a
+  CMS-associated page (News/Events/Gallery) or sit directly alongside one
+  (the homepage Gallery teaser), so were left connected to nothing, per
+  "existing CMS image systems must remain separate."
+- The About page has no separate "School History" (or any other
+  non-hero) image position in the current design — only its hero.
+
+| Slot | Page | Component | Purpose | Real container | Recommended upload |
+|---|---|---|---|---|---|
+| `home_hero` | Home | `src/components/home/Hero.tsx` | Full-bleed hero background | `min-h-[82vh] sm:min-h-[78vh] lg:min-h-[92vh]`, full width | 1920×1080 px, 16:9 |
+| `home_campus_highlight` | Home | `src/components/home/Campus.tsx` | Section image | `h-72 sm:h-96 lg:h-[30rem]` in a 1.3fr/1fr row | 1600×1067 px, 3:2 |
+| `home_student_life_highlight` | Home | `src/components/home/StudentLife.tsx` | Section image | `h-72 sm:h-96 lg:h-auto` in a 1fr/1.2fr row | 1600×1067 px, 3:2 |
+| `about_hero` | About | `LandingHero` (`editorial`) | Page hero | `h-64 sm:h-80 lg:h-[28rem]` in a 1.15fr/1fr row | 1600×1200 px, 4:3 |
+| `academics_hero` | Academics | `LandingHero` (`split`) | Page hero | `h-56 sm:h-72 lg:h-auto`, 50/50 split | 1600×1200 px, 4:3 |
+| `campus_hero` | Campus & Facilities | `LandingHero` (`fullBleed`) | Full-bleed page hero | `min-h-[58vh] sm:min-h-[52vh] lg:min-h-[68vh]` | 1920×1080 px, 16:9 |
+| `student_life_hero` | Student Life | `LandingHero` (`collage`, main tile only) | Page hero | `h-64 sm:h-80 lg:h-[28rem]` in a 1.4fr/1fr row | 1600×1200 px, 4:3 |
+| `admissions_hero` | Admissions | `LandingHero` (`split`) | Page hero | `h-56 sm:h-72 lg:h-auto`, 50/50 split | 1600×1200 px, 4:3 |
+
+All eight are guidance, not enforcement — validation only checks file
+type/size, exactly like every CMS image field.
+
+**Database** (`supabase/migrations/20260101000018_site_images.sql`): one
+new table, `public.site_images` — `id`, `slot_key` (`text`, `unique`,
+gated by a `check` constraint to exactly the 8 values above — the single
+mechanism that makes an admin-invented slot key impossible, enforced at
+the database layer, not just in application code), `image_path`,
+`alt_text`, `created_at`/`updated_at`/`updated_by`. No draft/published
+workflow (unlike every content table) — a saved image applies
+immediately, same as `site_settings`. The migration seeds all 8 rows by
+`slot_key`; the application only ever `UPDATE`s one of these existing
+rows, never `INSERT`s — reinforced by RLS below, which grants no insert
+policy at all.
+
+**RLS**: unconditional public `SELECT` (every column here is needed to
+render the public page; nothing is privileged) and `UPDATE` gated by
+`is_active_admin()` — both roles may manage these, same as ordinary CMS
+content. No insert/delete policy.
+
+**Storage** (`supabase/migrations/20260101000019_site_images_storage.sql`):
+a new dedicated private bucket, `site-images` (separate from every
+content domain's own bucket), 5MB limit, `image/jpeg`/`image/png`/
+`image/webp` only. Public `SELECT` policy: readable only if some
+`site_images` row currently points at that object (no status/draft
+concept needed here, unlike the content buckets — removing an image just
+means no row points at it anymore, which alone revokes public read, live-
+tested below). Admin insert/update/delete gated by `is_active_admin()`.
+No service-role key used anywhere in this module.
+
+**Admin module** (`/admin/website-images`, `src/lib/site-images/`,
+`src/components/admin/SiteImageSlotForm.tsx`): one page listing all 8
+slots grouped by page heading, each with its own small form — reuses the
+existing shared `ImageFileField` (immediate local preview on file
+selection, cropped to the slot's real public aspect ratio) plus the
+recommended-size guidance line, an optional alt-text input, Save, and
+(only shown once an image exists) a confirm-guarded Remove Image action
+that clears the slot back to its original `PhotoPlaceholder`. No
+Supabase/Storage/database terminology anywhere in the admin copy.
+
+**Public integration**: `src/lib/site-images/public.ts` exports
+`getSiteImage(slotKey)` — public-safe (never throws; a query or signing
+failure logs server-side and returns `null`, i.e. the placeholder stays).
+`LandingHero` (`src/components/hero/LandingHero.tsx`) gained two optional
+props, `imageUrl`/`imageAlt`, wired into exactly the three variant
+branches the five approved pages use (`fullBleed`, `split`, `editorial`,
+and the `collage` variant's main tile only) — every other page that uses
+`LandingHero` simply never passes them, so its rendering is byte-for-byte
+unchanged. `Hero.tsx`/`Campus.tsx`/`StudentLife.tsx` (home) each now call
+`getSiteImage()` directly and render `next/image` with `object-cover
+object-center` when a URL comes back, `PhotoPlaceholder` otherwise —
+identical fallback behavior to every CMS module's own image handling.
+`priority` is set only on each page's single hero image (and the Home
+Hero); the two homepage highlight sections load lazily, since they sit
+well below the fold.
+
+### Live security + lifecycle testing
+
+9 of 9 tests passed — genuinely live, via Supabase MCP tools
+(`apply_migration`, since `execute_sql` remains read-only on this
+project), exercising the full admin lifecycle against the real
+`home_hero` slot and a real linked Storage object, then reverted:
+
+| Test | Result |
+|---|---|
+| Inventing an arbitrary `slot_key` is rejected at the database layer | **PASS** — `check` constraint violation |
+| Anonymous reads all 8 slot rows | **PASS** |
+| Anonymous `UPDATE` on `site_images` denied | **PASS** — 0 rows affected |
+| Anonymous `INSERT` into the `site-images` bucket denied | **PASS** — RLS violation |
+| Anonymous cannot read a Storage object no slot references yet | **PASS** — 0 rows |
+| Authenticated active admin can save an image + alt text to a slot | **PASS** |
+| Anonymous can now read that newly-referenced Storage object | **PASS** — 1 row |
+| Authenticated active admin can remove the image (slot reverts to empty) | **PASS** |
+| Anonymous loses read access to the now-unreferenced Storage object | **PASS** — 0 rows, proving Remove Image actually revokes public access, not just hides the admin UI state |
+
+Cleanup verified: all 8 slots back to `image_path`/`alt_text` = `null`.
+One inert `storage.objects` metadata row remains (`zzztest/home-hero-
+test.jpg` — Supabase's `protect_delete()` trigger blocks direct SQL
+`DELETE` on `storage.objects`, the same previously-documented limitation
+as every prior phase's cleanup) — confirmed no longer publicly readable
+by the test above, and not referenced by any real row.
+
+`mcp__Supabase__get_advisors` (security), re-run after cleanup: the same
+two pre-existing `WARN` findings as every prior phase — nothing new from
+`site_images` or its policies.
+
+**Not live-tested (code-level verified only, same limitation as every
+prior phase)**: an actual browser upload through `/admin/website-images`
+and visual confirmation that the uploaded photo replaces the placeholder
+on the deployed public page — this sandbox cannot reach the deployed
+site or a real browser. What the tests above prove instead is that the
+entire server-side mechanism (RLS, Storage policy, the exact
+publish/remove transition) behaves correctly against real data; the
+`<Image>`/`PhotoPlaceholder` conditional itself is the same pattern
+already confirmed working in production for Management & Leadership.

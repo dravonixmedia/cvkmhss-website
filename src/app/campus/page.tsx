@@ -13,6 +13,7 @@ import { glanceFacts } from "@/data/site";
 import { faqCategories } from "@/data/faq";
 import { pageHeroes } from "@/data/pageHeroes";
 import { staggerDelay } from "@/lib/stagger";
+import { getSiteImage } from "@/lib/site-images/public";
 
 const title = "Campus & Facilities";
 const description =
@@ -27,10 +28,17 @@ const breadcrumb = [
   { label: "Campus", href: "/campus" },
 ];
 
-export default function CampusPage() {
+export default async function CampusPage() {
+  const heroImage = await getSiteImage("campus_hero");
+
   return (
     <>
-      <LandingHero hero={pageHeroes.campus} breadcrumb={breadcrumb} />
+      <LandingHero
+        hero={pageHeroes.campus}
+        breadcrumb={breadcrumb}
+        imageUrl={heroImage?.url}
+        imageAlt={heroImage?.alt}
+      />
 
       <section className="border-b border-border bg-paper py-10">
         <Container>

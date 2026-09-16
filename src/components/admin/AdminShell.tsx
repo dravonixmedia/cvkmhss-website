@@ -16,6 +16,7 @@ const contentNav: NavLeaf[] = [
   { label: "Notices", href: "/admin/notices" },
   { label: "Downloads", href: "/admin/downloads" },
   { label: "Gallery", href: "/admin/gallery" },
+  { label: "Website Images", href: "/admin/website-images" },
 ];
 
 function getAdministrationNav(role: ProfileRow["role"]): NavLeaf[] {

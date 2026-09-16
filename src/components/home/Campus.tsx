@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
@@ -6,8 +7,12 @@ import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { Reveal } from "@/components/motion/Reveal";
 import { facilities } from "@/data/campus";
 import { staggerDelay } from "@/lib/stagger";
+import { getSiteImage } from "@/lib/site-images/public";
 
-export function Campus() {
+export async function Campus() {
+  const highlightImage = await getSiteImage("home_campus_highlight");
+  const caption = "CVKM campus, East Kallada";
+
   return (
     <section className="py-20 sm:py-24">
       <Container>
@@ -25,12 +30,17 @@ export function Campus() {
 
         <div className="mt-12 grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-14">
           <div className="relative h-72 sm:h-96 lg:h-[30rem]">
-            <PhotoPlaceholder
-              caption="CVKM campus, East Kallada"
-              tone="navy"
-              focal="bottom-left"
-              className="absolute inset-0"
-            />
+            {highlightImage ? (
+              <Image
+                src={highlightImage.url}
+                alt={highlightImage.alt || caption}
+                fill
+                sizes="(min-width: 1024px) 55vw, 100vw"
+                className="object-cover object-center"
+              />
+            ) : (
+              <PhotoPlaceholder caption={caption} tone="navy" focal="bottom-left" className="absolute inset-0" />
+            )}
           </div>
 
           <ul className="divide-y divide-border border-t border-border lg:self-center">

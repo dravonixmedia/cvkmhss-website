@@ -12,6 +12,7 @@ import { academicStages } from "@/data/academics";
 import { faqCategories } from "@/data/faq";
 import { pageHeroes } from "@/data/pageHeroes";
 import { staggerDelay } from "@/lib/stagger";
+import { getSiteImage } from "@/lib/site-images/public";
 
 const title = "Academics";
 const description =
@@ -26,13 +27,19 @@ const breadcrumb = [
   { label: "Academics", href: "/academics" },
 ];
 
-export default function AcademicsPage() {
+export default async function AcademicsPage() {
   const higherSecondary = academicStages.find((stage) => stage.id === "higher-secondary");
   const foundational = academicStages.find((stage) => stage.id === "classes-v-x");
+  const heroImage = await getSiteImage("academics_hero");
 
   return (
     <>
-      <LandingHero hero={pageHeroes.academics} breadcrumb={breadcrumb} />
+      <LandingHero
+        hero={pageHeroes.academics}
+        breadcrumb={breadcrumb}
+        imageUrl={heroImage?.url}
+        imageAlt={heroImage?.alt}
+      />
 
       <section className="py-16 sm:py-20">
         <Container>

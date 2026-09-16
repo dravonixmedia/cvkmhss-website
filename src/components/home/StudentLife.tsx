@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
@@ -6,8 +7,12 @@ import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { Reveal } from "@/components/motion/Reveal";
 import { studentActivities } from "@/data/student-life";
 import { staggerDelay } from "@/lib/stagger";
+import { getSiteImage } from "@/lib/site-images/public";
 
-export function StudentLife() {
+export async function StudentLife() {
+  const highlightImage = await getSiteImage("home_student_life_highlight");
+  const caption = "Student activities at CVKM";
+
   return (
     <section className="border-y border-border bg-paper py-20 sm:py-24">
       <Container>
@@ -25,12 +30,17 @@ export function StudentLife() {
 
         <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-14">
           <div className="relative order-2 h-72 sm:h-96 lg:order-1 lg:h-auto">
-            <PhotoPlaceholder
-              caption="Student activities at CVKM"
-              tone="navy"
-              focal="top-left"
-              className="absolute inset-0"
-            />
+            {highlightImage ? (
+              <Image
+                src={highlightImage.url}
+                alt={highlightImage.alt || caption}
+                fill
+                sizes="(min-width: 1024px) 42vw, 100vw"
+                className="object-cover object-center"
+              />
+            ) : (
+              <PhotoPlaceholder caption={caption} tone="navy" focal="top-left" className="absolute inset-0" />
+            )}
           </div>
 
           <div className="order-1 grid grid-cols-2 gap-x-8 gap-y-8 border-t border-border pt-8 lg:order-2">
