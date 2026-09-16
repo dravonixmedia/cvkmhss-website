@@ -7,7 +7,6 @@ export const primaryNav: NavItem[] = [
   { label: "Campus", href: "/campus" },
   { label: "Student Life", href: "/student-life" },
   { label: "Achievements", href: "/achievements" },
-  { label: "Admissions", href: "/admissions" },
   {
     label: "News & Events",
     href: "/news",
