@@ -21,7 +21,7 @@ const schoolFaq = faqCategories.filter((category) => category.id === "school");
 
 const title = "About CVKM HSS";
 const description =
-  "Learn about C V K M Higher Secondary School's history, identity and journey since 1926 in East Kallada, Kollam, Kerala.";
+  "Learn about C.V. Kunjiraman Memorial Higher Secondary School (CVKM HSS)'s history, identity and journey since 1926 in East Kallada, Kollam, Kerala.";
 
 export const metadata: Metadata = buildMetadata({ title, description, path: "/about" });
 
@@ -53,11 +53,11 @@ export default async function AboutPage() {
           <Reveal variant="fadeUp">
             <SectionHeading eyebrow="Introduction" title="Who We Are" />
             <p className="mt-6 text-base leading-relaxed text-slate">
-              {site.name} ({site.alternateName}) is an educational institution located in{" "}
-              {site.address.locality}, {site.address.region}, {site.address.state}, {site.address.country}.
-              Founded in {site.foundingYear}, the school has grown over the decades to offer Higher
-              Secondary education since {site.higherSecondaryStartYear}, across Science, Computer
-              Science and Humanities streams.
+              C.V. Kunjiraman Memorial Higher Secondary School (CVKM HSS), {site.address.locality}, is
+              an educational institution with a legacy dating back to {site.foundingYear}, located in{" "}
+              {site.address.region}, {site.address.state}, {site.address.country}. The school has grown
+              over the decades to offer Higher Secondary education since {site.higherSecondaryStartYear},
+              across Science, Computer Science and Humanities streams.
             </p>
           </Reveal>
           <div className="mt-10 grid gap-6 sm:grid-cols-2">
